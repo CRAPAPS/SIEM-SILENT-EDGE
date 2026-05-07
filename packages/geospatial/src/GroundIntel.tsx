@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { GeoDevice } from "./types";
 
-interface GroundIntelProps {
+export interface GroundIntelProps {
   device: GeoDevice | null;
 }
 

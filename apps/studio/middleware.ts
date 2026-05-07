@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import type { CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
@@ -12,7 +13,7 @@ export async function middleware(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
@@ -36,7 +37,18 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/api/webhooks") ||
     pathname === "/favicon.ico";
 
-  if (isPublicAsset) return supabaseResponse;
+  const isPublicPage =
+    pathname === "/" ||
+    pathname.startsWith("/services") ||
+    pathname.startsWith("/silent-edge") ||
+    pathname.startsWith("/our-story") ||
+    pathname.startsWith("/contact") ||
+    pathname.startsWith("/news") ||
+    pathname.startsWith("/store") ||
+    pathname.startsWith("/privacy-policy") ||
+    pathname.startsWith("/terms");
+
+  if (isPublicAsset || isPublicPage) return supabaseResponse;
 
   // Redirect unauthenticated users to login
   if (!user && !isAuthPage) {

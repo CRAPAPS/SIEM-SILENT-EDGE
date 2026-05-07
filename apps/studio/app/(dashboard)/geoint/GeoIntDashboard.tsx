@@ -1,22 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import type { GeoDevice } from "@silent-edge/geospatial";
+import type { GeoDevice, GlobeViewProps, TacticalGridProps, GroundIntelProps } from "@silent-edge/geospatial";
 
 // Lazy imports so Three.js doesn't break SSR
 import dynamic from "next/dynamic";
 
-const GlobeView = dynamic(
+const GlobeView = dynamic<GlobeViewProps>(
   () => import("@silent-edge/geospatial").then((m) => ({ default: m.GlobeView })),
   { ssr: false, loading: () => <GlobeLoading /> }
 );
 
-const TacticalGrid = dynamic(
+const TacticalGrid = dynamic<TacticalGridProps>(
   () => import("@silent-edge/geospatial").then((m) => ({ default: m.TacticalGrid })),
   { ssr: false, loading: () => <GridLoading /> }
 );
 
-const GroundIntel = dynamic(
+const GroundIntel = dynamic<GroundIntelProps>(
   () => import("@silent-edge/geospatial").then((m) => ({ default: m.GroundIntel })),
   { ssr: false }
 );

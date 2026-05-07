@@ -22,7 +22,7 @@ function severityArcColor(severity: ThreatArc["severity"]): string {
   return map[severity];
 }
 
-interface GlobeViewProps {
+export interface GlobeViewProps {
   devices?: GeoDevice[];
   arcs?: ThreatArc[];
   onDeviceClick?: (device: GeoDevice) => void;
@@ -112,9 +112,11 @@ export function GlobeView({
           .globeImageUrl(
             "https://unpkg.com/three-globe@2.31.0/example/img/earth-dark.jpg"
           )
-          .backgroundColor("rgba(0,0,0,0)")
           .atmosphereColor("#3d7eff")
           .atmosphereAltitude(0.12);
+
+        // set transparent background via direct property (newer three-globe types omit this method)
+        (g as unknown as { backgroundColor: (c: string) => void }).backgroundColor("rgba(0,0,0,0)");
 
         globe = g as unknown as typeof globe;
         globeRef.current = g;

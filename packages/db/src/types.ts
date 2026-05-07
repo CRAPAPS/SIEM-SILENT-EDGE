@@ -1,14 +1,3 @@
-/**
- * Supabase database type definitions for the Silent Edge Platform.
- *
- * After setting up the Supabase project and running migrations, replace this
- * file with the auto-generated types:
- *
- *   npx supabase gen types typescript --project-id <project-ref> > packages/db/src/types.ts
- *
- * The stub below is enough to satisfy TypeScript until real types are generated.
- */
-
 export type Json =
   | string
   | number
@@ -25,7 +14,7 @@ export type DeviceType = "workstation" | "server" | "network" | "mobile" | "unkn
 export type OrgTier = "standard" | "pro" | "enterprise";
 export type OrgStatus = "active" | "suspended" | "trial";
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       organizations: {
@@ -42,8 +31,33 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["organizations"]["Row"], "id" | "created_at" | "updated_at">;
-        Update: Partial<Database["public"]["Tables"]["organizations"]["Insert"]>;
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          tier?: OrgTier;
+          status?: OrgStatus;
+          contract_start?: string | null;
+          contract_end?: string | null;
+          monthly_rate?: number | null;
+          meta?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          slug?: string;
+          tier?: OrgTier;
+          status?: OrgStatus;
+          contract_start?: string | null;
+          contract_end?: string | null;
+          monthly_rate?: number | null;
+          meta?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       profiles: {
         Row: {
@@ -56,15 +70,42 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["profiles"]["Row"], "created_at" | "updated_at">;
-        Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
+        Insert: {
+          id: string;
+          organization_id?: string | null;
+          display_name?: string | null;
+          role?: Role;
+          avatar_url?: string | null;
+          last_seen_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          organization_id?: string | null;
+          display_name?: string | null;
+          role?: Role;
+          avatar_url?: string | null;
+          last_seen_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       alerts: {
         Row: {
           id: string;
           organization_id: string;
           device_id: string | null;
-          source: Provider | "manual" | "system";
+          source: string;
           source_alert_id: string | null;
           severity: Severity;
           title: string;
@@ -90,8 +131,53 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["alerts"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: {
+          id?: string;
+          organization_id: string;
+          device_id?: string | null;
+          source: string;
+          source_alert_id?: string | null;
+          severity: Severity;
+          title: string;
+          description?: string | null;
+          category?: string | null;
+          technique_id?: string | null;
+          technique_name?: string | null;
+          indicator_type?: string | null;
+          indicator_value?: string | null;
+          host?: string | null;
+          host_ip?: string | null;
+          status?: AlertStatus;
+          assigned_to?: string | null;
+          acknowledged_at?: string | null;
+          resolved_at?: string | null;
+          resolution_note?: string | null;
+          playbook_id?: string | null;
+          ai_summary?: string | null;
+          ai_mitigation?: string | null;
+          ai_confidence?: number | null;
+          raw_data?: Json;
+          occurred_at: string;
+          created_at?: string;
+          updated_at?: string;
+        };
         Update: Partial<Database["public"]["Tables"]["alerts"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "alerts_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "alerts_device_id_fkey";
+            columns: ["device_id"];
+            isOneToOne: false;
+            referencedRelation: "devices";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       devices: {
         Row: {
@@ -114,8 +200,36 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["devices"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: {
+          id?: string;
+          organization_id: string;
+          ninja_id: string;
+          hostname: string;
+          display_name?: string | null;
+          device_type?: DeviceType | null;
+          os?: string | null;
+          os_version?: string | null;
+          ip_address?: string | null;
+          mac_address?: string | null;
+          location?: string | null;
+          risk_score?: number;
+          risk_factors?: Json;
+          is_online?: boolean;
+          last_seen_at?: string | null;
+          raw_data?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
         Update: Partial<Database["public"]["Tables"]["devices"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "devices_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       playbooks: {
         Row: {
@@ -131,8 +245,29 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["playbooks"]["Row"], "id" | "created_at" | "updated_at">;
+        Insert: {
+          id?: string;
+          organization_id: string;
+          name: string;
+          incident_type: string;
+          trigger_tags?: string[];
+          steps?: Json;
+          is_active?: boolean;
+          version?: number;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
         Update: Partial<Database["public"]["Tables"]["playbooks"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "playbooks_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       audit_logs: {
         Row: {
@@ -149,8 +284,20 @@ export interface Database {
           user_agent: string | null;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["audit_logs"]["Row"], "id" | "created_at">;
+        Insert: {
+          organization_id?: string | null;
+          actor_id?: string | null;
+          actor_email?: string | null;
+          action: string;
+          target_type?: string | null;
+          target_id?: string | null;
+          before_state?: Json | null;
+          after_state?: Json | null;
+          ip_address?: string | null;
+          user_agent?: string | null;
+        };
         Update: never;
+        Relationships: [];
       };
       vector_documents: {
         Row: {
@@ -163,8 +310,18 @@ export interface Database {
           metadata: Json;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["vector_documents"]["Row"], "id" | "created_at">;
+        Insert: {
+          id?: string;
+          organization_id?: string | null;
+          source_file: string;
+          chunk_index: number;
+          content: string;
+          embedding?: number[] | null;
+          metadata?: Json;
+          created_at?: string;
+        };
         Update: Partial<Database["public"]["Tables"]["vector_documents"]["Insert"]>;
+        Relationships: [];
       };
       system_metrics: {
         Row: {
@@ -175,8 +332,16 @@ export interface Database {
           metric_text: string | null;
           recorded_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["system_metrics"]["Row"], "id">;
+        Insert: {
+          id?: string;
+          organization_id?: string | null;
+          metric_name: string;
+          metric_value?: number | null;
+          metric_text?: string | null;
+          recorded_at?: string;
+        };
         Update: Partial<Database["public"]["Tables"]["system_metrics"]["Insert"]>;
+        Relationships: [];
       };
       api_credentials: {
         Row: {
@@ -190,8 +355,27 @@ export interface Database {
           last_synced_at: string | null;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["api_credentials"]["Row"], "id" | "created_at">;
+        Insert: {
+          id?: string;
+          organization_id: string;
+          provider: Provider;
+          encrypted_key: string;
+          encrypted_secret?: string | null;
+          base_url?: string | null;
+          is_active?: boolean;
+          last_synced_at?: string | null;
+          created_at?: string;
+        };
         Update: Partial<Database["public"]["Tables"]["api_credentials"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "api_credentials_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       service_records: {
         Row: {
@@ -206,9 +390,32 @@ export interface Database {
           notes: string | null;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["service_records"]["Row"], "id" | "created_at">;
+        Insert: {
+          id?: string;
+          organization_id: string;
+          record_type: "invoice" | "credit" | "adjustment";
+          period_start: string;
+          period_end: string;
+          amount: number;
+          status?: "pending" | "paid" | "overdue" | "cancelled";
+          invoice_ref?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
         Update: Partial<Database["public"]["Tables"]["service_records"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "service_records_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          }
+        ];
       };
+    };
+    Views: {
+      [_ in never]: never;
     };
     Functions: {
       match_documents: {
@@ -237,7 +444,20 @@ export interface Database {
           avg_ttr_mins: number;
         }[];
       };
+      current_user_role: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
+      current_user_org: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
     };
-    Enums: {};
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
-}
+};

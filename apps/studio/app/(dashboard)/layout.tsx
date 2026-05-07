@@ -18,15 +18,23 @@ export default async function DashboardLayout({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, display_name, organization_id, organizations(name)")
+    .select("role, display_name, organization_id")
     .eq("id", user.id)
     .single();
 
   const role = (profile?.role ?? "client") as "admin" | "analyst" | "client";
-  const orgName =
-    role === "admin"
-      ? "GOD VIEW"
-      : (profile?.organizations as { name: string } | null)?.name ?? undefined;
+
+  let orgName: string | undefined;
+  if (role === "admin") {
+    orgName = "GOD VIEW";
+  } else if (profile?.organization_id) {
+    const { data: org } = await supabase
+      .from("organizations")
+      .select("name")
+      .eq("id", profile.organization_id)
+      .single();
+    orgName = org?.name ?? undefined;
+  }
 
   return (
     <>

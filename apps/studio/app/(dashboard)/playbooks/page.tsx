@@ -36,9 +36,9 @@ export default function PlaybooksPage() {
       });
   }, []);
 
-  const DEMO_STEPS = [
+  const DEMO_STEPS: { order: number; title: string; description: string; action?: string }[] = [
     { order: 1, title: "TRIAGE", description: "Confirm alert is not a false positive. Check source, host context, and indicator reputation." },
-    { order: 2, title: "CONTAIN", description: "Isolate the affected host via SentinelOne disconnect or network segmentation." },
+    { order: 2, title: "CONTAIN", description: "Isolate the affected host via SentinelOne disconnect or network segmentation.", action: "!isolate [hostname]" },
     { order: 3, title: "INVESTIGATE", description: "Pull process tree, network connections, and file activity from EDR. Map to MITRE ATT&CK." },
     { order: 4, title: "ERADICATE", description: "Remove malicious artifacts. Patch exploited vulnerability. Rotate compromised credentials." },
     { order: 5, title: "RECOVER", description: "Restore host from clean backup. Re-enable network connectivity. Monitor for 24h." },

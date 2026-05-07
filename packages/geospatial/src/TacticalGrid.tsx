@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { GeoDevice } from "./types";
 
-interface TacticalGridProps {
+export interface TacticalGridProps {
   devices?: GeoDevice[];
   center?: { lat: number; lon: number };
   zoom?: number;
