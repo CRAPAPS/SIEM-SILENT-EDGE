@@ -180,6 +180,11 @@ html, body {
 .sev-ok    { color: var(--sev-ok); }
 .sev-crit  { color: var(--sev-crit); }
 
+/* ─── Marketing Animations ───────────────────────────────────────────────────── */
+@keyframes noir-blink { 50% { opacity: 0; } }
+@keyframes noir-tick  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes noir-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
 .sev-badge {
   display: inline-flex;
   align-items: center;
