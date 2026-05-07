@@ -1,0 +1,59 @@
+/*
+ * Silent Edge Design Tokens — Single Source of Truth
+ * Ported from SHEL INFOSEC WordPress theme (assets/css/main.css)
+ * Every app imports this file. Do not duplicate these vars elsewhere.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* ── Backgrounds ─────────────────────────────────────────────── */
+  --bg:     #050607;
+  --bg-2:   #0a0c0e;
+  --bg-3:   #0e1113;
+
+  /* ── Foregrounds ─────────────────────────────────────────────── */
+  --fg:     #f4f6f5;
+  --muted:  rgba(244, 246, 245, 0.5);
+  --border: rgba(244, 246, 245, 0.08);
+
+  /* ── Accent (switchable — 5 presets) ────────────────────────── */
+  --accent:          #3d7eff;
+  --accent-alpha:    rgba(61, 126, 255, 0.12);
+  --accent-alt-1:    #5aa9ff;
+  --accent-alt-2:    #00e28a;
+  --accent-alt-3:    #ff5155;
+  --accent-alt-4:    #e8e8e8;
+
+  /* ── Typography ─────────────────────────────────────────────── */
+  --sans: "Inter", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
+
+  /* ── SOC Severity Palette ────────────────────────────────────── */
+  --sev-info:  #3d7eff;
+  --sev-low:   #7b8fa6;
+  --sev-warn:  #ffaa00;
+  --sev-alert: #ff5155;
+  --sev-ok:    #00e28a;
+  --sev-crit:  #ff2222;
+
+  /* ── Effects ─────────────────────────────────────────────────── */
+  --scanlines: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.015) 0px 1px,
+    transparent 1px 3px
+  );
+  --vignette: radial-gradient(
+    circle at 50% 0%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+
+  /* ── Spacing / Sizing ────────────────────────────────────────── */
+  --soc-bar-h:  40px;
+  --sidenav-w:  220px;
+  --sidenav-collapsed: 48px;
+
+  /* ── Transitions ─────────────────────────────────────────────── */
+  --ease:       cubic-bezier(0.4, 0, 0.2, 1);
+  --duration:   150ms;
+}
