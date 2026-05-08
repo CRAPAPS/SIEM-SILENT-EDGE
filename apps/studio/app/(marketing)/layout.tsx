@@ -5,6 +5,23 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { AccentProvider, ACCENTS, useAccent } from "./accent";
 
+function SiteLogo({ size = 40 }: { size?: number }) {
+  return (
+    <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
+      <div className="site-logo-ring-outer" />
+      <div className="site-logo-ring-inner" />
+      <span className="site-logo-corner site-logo-corner-tl" />
+      <span className="site-logo-corner site-logo-corner-tr" />
+      <span className="site-logo-corner site-logo-corner-bl" />
+      <span className="site-logo-corner site-logo-corner-br" />
+      <div className="site-logo-img">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/shel-logo.jpg" alt="SHEL infosec" />
+      </div>
+    </div>
+  );
+}
+
 const NAV_LINKS = [
   { href: "/",           label: "home" },
   { href: "/services",   label: "services" },
@@ -85,14 +102,8 @@ function MarketingHeader() {
           borderBottom: `1px solid ${bdr}`,
         }}>
           {/* Logo */}
-          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: 4, overflow: "hidden",
-              border: `1px solid ${bdr}`, background: "#000", flexShrink: 0,
-            }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/shel-logo.jpg" alt="SHEL infosec" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            </div>
+          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
+            <SiteLogo size={40} />
             <div style={{ fontFamily: "var(--mono)", fontSize: 13, fontWeight: 700, letterSpacing: 2, color: "var(--fg)" }}>
               SHEL<span style={{ color: muted }}>/infosec</span>
             </div>
@@ -217,10 +228,7 @@ function MarketingFooter() {
         <div className="mkt-footer-grid">
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 4, overflow: "hidden", border: "1px solid var(--border)", background: "#000", flexShrink: 0 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/shel-logo.jpg" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </div>
+              <SiteLogo size={44} />
               <div style={{ fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "1.5px", color: "var(--accent)" }}>SHEL / INFOSEC</div>
             </div>
             <div style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.6, maxWidth: 280 }}>
