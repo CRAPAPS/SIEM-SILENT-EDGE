@@ -22,9 +22,7 @@ export default function OurStoryPage() {
             textTransform: "uppercase",
           }}>
             Born from a gap.<br />
-            <span style={{ color: "var(--accent)", textShadow: "0 0 40px var(--a55)" }}>
-              Built for the mid-market.
-            </span>
+            <span className="glow-text">Built for the mid-market.</span>
           </h1>
         </div>
       </section>
@@ -49,10 +47,9 @@ export default function OurStoryPage() {
           <div className="mkt-3col-feat" style={{ marginTop: 64 }}>
             {STATS.map(([v, k]) => (
               <div key={k} style={{ background: "var(--bg)", padding: "clamp(28px, 4vw, 40px) clamp(20px, 3vw, 28px)" }}>
-                <div style={{
+                <div className="glow-text" style={{
                   fontSize: "clamp(40px, 6vw, 64px)", fontWeight: 900,
-                  letterSpacing: -2, color: "var(--accent)", lineHeight: 1,
-                  textShadow: "0 0 24px var(--a44)",
+                  letterSpacing: -2, lineHeight: 1,
                 }}>{v}</div>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--muted)", letterSpacing: "1.5px", marginTop: 10 }}>{k}</div>
               </div>
@@ -97,7 +94,7 @@ export default function OurStoryPage() {
             fontFamily: "var(--sans)", fontSize: "clamp(28px, 4vw, 64px)",
             fontWeight: 900, letterSpacing: "-0.03em", margin: "0 0 32px", textTransform: "uppercase",
           }}>
-            Want to work with us?
+            Want to work<br /><span className="glow-text">with us?</span>
           </h2>
           <Link href="/contact" style={{
             fontFamily: "var(--mono)", fontSize: 13, letterSpacing: "1.5px", fontWeight: 700,

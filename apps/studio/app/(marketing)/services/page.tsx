@@ -38,7 +38,7 @@ export default function ServicesPage() {
             fontWeight: 900, letterSpacing: "-0.03em", margin: 0, lineHeight: 0.9, textTransform: "uppercase",
           }}>
             Every discipline.<br />
-            <span style={{ color: "var(--accent)", textShadow: "0 0 40px var(--a55)" }}>One team to call.</span>
+            <span className="glow-text">One team to call.</span>
           </h1>
           <p style={{
             fontSize: "clamp(15px, 2vw, 19px)", color: "rgba(244,246,245,0.7)",
@@ -56,10 +56,9 @@ export default function ServicesPage() {
             {SERVICES.map((s) => (
               <div key={s.id} id={s.id} style={{ background: "var(--bg-2)", padding: "clamp(24px, 4vw, 48px) clamp(20px, 3vw, 40px)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 }}>
-                  <div style={{
+                  <div className="glow-text" style={{
                     fontFamily: "var(--mono)", fontSize: "clamp(28px, 3vw, 40px)",
-                    fontWeight: 900, color: "var(--accent)", letterSpacing: -1,
-                    textShadow: "0 0 20px var(--a44)",
+                    fontWeight: 900, letterSpacing: -1,
                   }}>{s.code}</div>
                   <div style={{ fontFamily: "var(--mono)", fontSize: 10, color: "var(--muted)", letterSpacing: "1.5px" }}>ACTIVE</div>
                 </div>
@@ -96,7 +95,7 @@ export default function ServicesPage() {
             fontFamily: "var(--sans)", fontSize: "clamp(32px, 5vw, 80px)",
             fontWeight: 900, letterSpacing: "-0.03em", margin: "0 0 32px", lineHeight: 0.9, textTransform: "uppercase",
           }}>
-            Ready when<br /><span style={{ color: "var(--accent)" }}>you are.</span>
+            Ready when<br /><span className="glow-text">you are.</span>
           </h2>
           <Link href="/contact" style={{
             fontFamily: "var(--mono)", fontSize: 13, letterSpacing: "1.5px", fontWeight: 700,

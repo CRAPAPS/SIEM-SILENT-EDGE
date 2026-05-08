@@ -48,7 +48,8 @@ function MarketingHeader() {
           display: "flex", gap: "clamp(12px, 2vw, 24px)", color: muted, background: "#0a0c0e",
           alignItems: "center", overflowX: "hidden",
         }}>
-          <span style={{ flexShrink: 0 }}>
+          {/* SOC metrics — hidden on mobile, only swatches remain */}
+          <span className="soc-hide-mobile" style={{ flexShrink: 0 }}>
             <span style={{ color: "var(--accent)", marginRight: 6 }}>●</span>
             SOC_STATUS <span style={{ color: "var(--fg)" }}>GREEN</span>
           </span>
@@ -57,12 +58,12 @@ function MarketingHeader() {
           <span className="soc-hide-mobile" style={{ flexShrink: 0 }}>EVENTS/DAY <span style={{ color: "var(--fg)" }}>14.2M</span></span>
           <span className="soc-hide-tablet" style={{ marginLeft: "auto", flexShrink: 0 }}>CAPE_TOWN · UTC+2</span>
           <span className="soc-hide-mobile" style={{ flexShrink: 0 }}>◐ {clock}</span>
-          {/* Accent swatches */}
-          <span style={{
+          {/* Accent swatches — always visible, push right on mobile via CSS */}
+          <span className="soc-swatches" style={{
             display: "flex", alignItems: "center", gap: 6, flexShrink: 0,
             paddingLeft: 16, borderLeft: `1px solid ${bdr}`,
           }}>
-            <span className="soc-hide-mobile" style={{ color: muted, marginRight: 4, fontSize: "10px" }}>THEME</span>
+            <span style={{ color: muted, marginRight: 4, fontSize: "10px" }}>THEME</span>
             {ACCENTS.map((o) => (
               <button key={o.v} onClick={() => setAccent(o.v)} title={o.name} style={{
                 width: 14, height: 14, borderRadius: 2, padding: 0, cursor: "pointer",
@@ -116,7 +117,7 @@ function MarketingHeader() {
 
           {/* Desktop CTAs */}
           <div className="nav-ctas" style={{ marginLeft: "auto" }}>
-            <Link href="/login" style={{
+            <Link href="/login" className="nav-login" style={{
               fontFamily: "var(--mono)", fontSize: 11,
               background: "transparent", color: muted,
               border: `1px solid ${bdr}`, padding: "8px 14px",

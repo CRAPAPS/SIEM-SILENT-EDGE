@@ -30,7 +30,7 @@ export default function ContactPage() {
           fontWeight: 900, letterSpacing: "-0.03em", margin: 0, lineHeight: 0.9, textTransform: "uppercase",
         }}>
           Let&apos;s talk<br />about your<br />
-          <span style={{ color: "var(--accent)", textShadow: "0 0 32px var(--a55)" }}>posture.</span>
+          <span className="glow-text">posture.</span>
         </h1>
         <p style={{ fontSize: "clamp(14px, 1.8vw, 17px)", color: "var(--muted)", lineHeight: 1.65, marginTop: 28, maxWidth: 480 }}>
           30-minute intro call. No slides, no pitch. We look at what you have and tell you — honestly — where the gaps are.

@@ -27,7 +27,7 @@ export default function SilentEdgePage() {
             fontWeight: 900, letterSpacing: "-0.03em", margin: 0, lineHeight: 0.88, textTransform: "uppercase",
           }}>
             Silent<br />
-            <span style={{ color: "var(--accent)", textShadow: "0 0 40px var(--a88)" }}>Edge.</span>
+            <span className="glow-text">Edge.</span>
           </h1>
           <p style={{
             fontSize: "clamp(15px, 2vw, 20px)", color: "rgba(244,246,245,0.7)",
@@ -79,9 +79,9 @@ export default function SilentEdgePage() {
               { v: "24/7",  k: "SOC coverage" },
             ].map((s) => (
               <div key={s.k} style={{ background: "var(--bg)", padding: "clamp(24px, 3vw, 40px) clamp(20px, 3vw, 32px)" }}>
-                <div style={{
+                <div className="glow-text" style={{
                   fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 900, letterSpacing: -1.5,
-                  color: "var(--accent)", lineHeight: 1, textShadow: "0 0 20px var(--a44)",
+                  lineHeight: 1,
                 }}>{s.v}</div>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--muted)", letterSpacing: "1.5px", marginTop: 10 }}>{s.k.toUpperCase()}</div>
               </div>
@@ -98,7 +98,7 @@ export default function SilentEdgePage() {
             fontFamily: "var(--sans)", fontSize: "clamp(32px, 5vw, 80px)",
             fontWeight: 900, letterSpacing: "-0.03em", margin: "0 0 32px", lineHeight: 0.9, textTransform: "uppercase",
           }}>
-            One agent.<br /><span style={{ color: "var(--accent)" }}>Total visibility.</span>
+            One agent.<br /><span className="glow-text">Total visibility.</span>
           </h2>
           <Link href="/store" style={{
             fontFamily: "var(--mono)", fontSize: 13, letterSpacing: "1.5px", fontWeight: 700,

@@ -194,6 +194,69 @@ html, body {
 @keyframes noir-tick  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes noir-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
+/* Cyber-glitch glow — RGB split + halo surge, loops every 9s */
+@keyframes accent-glitch {
+  0%, 82%  {
+    text-shadow:
+      0 2px 4px rgba(0,0,0,0.85),
+      0 0 40px var(--a88),
+      0 0 80px var(--a44);
+  }
+  83% {
+    text-shadow:
+      -3px 0 0 rgba(255,81,85,0.75),
+      3px 0 0 var(--accent),
+      0 0 50px var(--a88),
+      0 0 90px var(--a55);
+  }
+  84% {
+    text-shadow:
+      0 2px 4px rgba(0,0,0,0.85),
+      0 0 40px var(--a88),
+      0 0 80px var(--a44);
+  }
+  86% {
+    text-shadow:
+      2px 0 0 var(--accent),
+      -2px 0 0 rgba(255,81,85,0.5),
+      0 0 40px var(--a88);
+  }
+  87% {
+    text-shadow:
+      0 2px 4px rgba(0,0,0,0.85),
+      0 0 40px var(--a88),
+      0 0 80px var(--a44);
+  }
+  94% {
+    text-shadow:
+      0 0 60px var(--a88),
+      0 0 120px var(--a55),
+      0 0 200px var(--a33);
+  }
+  96% {
+    text-shadow:
+      0 2px 4px rgba(0,0,0,0.85),
+      0 0 40px var(--a88),
+      0 0 80px var(--a44);
+  }
+  100% {
+    text-shadow:
+      0 2px 4px rgba(0,0,0,0.85),
+      0 0 40px var(--a88),
+      0 0 80px var(--a44);
+  }
+}
+
+/* Apply to any accent-coloured text that should glitch + glow */
+.glow-text {
+  color: var(--accent);
+  text-shadow:
+    0 2px 4px rgba(0,0,0,0.85),
+    0 0 40px var(--a88),
+    0 0 80px var(--a44);
+  animation: accent-glitch 9s ease-in-out infinite;
+}
+
 .sev-badge {
   display: inline-flex;
   align-items: center;
@@ -488,9 +551,10 @@ html, body {
   .mkt-why-grid    { grid-template-columns: 1fr; }
   .mkt-footer-grid { grid-template-columns: 1fr; }
   .soc-hide-mobile { display: none !important; }
+  .soc-swatches    { margin-left: auto !important; padding-left: 0 !important; border-left: none !important; }
   .nav-links       { display: none !important; }
-  .nav-ctas        { display: none !important; }
-  .nav-hamburger   { display: flex !important; align-items: center; justify-content: center; margin-left: auto; }
+  .nav-login       { display: none !important; }
+  .nav-hamburger   { display: flex !important; align-items: center; justify-content: center; }
 }
 
 /* ── Ticker always scrolls ── */

@@ -163,14 +163,14 @@ export default function HomePage() {
           {/* Cinematic headline */}
           <h1 style={{
             fontFamily: "var(--sans)",
-            fontSize: "clamp(48px, 10vw, 160px)",
+            fontSize: "clamp(68px, 18vw, 160px)",
             lineHeight: 0.88, fontWeight: 900, letterSpacing: "-0.03em",
             margin: 0, textTransform: "uppercase",
           }}>
-            <span style={{ display: "block" }}>Fortify your</span>
-            <span style={{ display: "block", color: "var(--accent)", textShadow: "0 0 40px var(--a88)" }}>
-              digital empire.
-            </span>
+            <span style={{ display: "block" }}>Fortify</span>
+            <span style={{ display: "block" }}>your</span>
+            <span style={{ display: "block" }}>digital</span>
+            <span className="glow-text" style={{ display: "block" }}>empire.</span>
           </h1>
 
           {/* Two-column: subhead/CTAs left, terminal right */}
@@ -251,12 +251,12 @@ export default function HomePage() {
           </div>
           <h2 style={{
             fontFamily: "var(--sans)",
-            fontSize: "clamp(36px, 8vw, 120px)",
+            fontSize: "clamp(52px, 13vw, 120px)",
             fontWeight: 900, letterSpacing: "-0.03em",
             margin: "0 0 clamp(32px, 5vw, 64px)", lineHeight: 0.9,
             textTransform: "uppercase",
           }}>
-            Four<br />disciplines.<br /><span style={{ color: "var(--accent)" }}>One team.</span>
+            Four<br />disciplines.<br /><span className="glow-text">One team.</span>
           </h2>
           <div style={{
             fontFamily: "var(--mono)", fontSize: 11, color: "var(--muted)",
@@ -267,18 +267,17 @@ export default function HomePage() {
 
           {SERVICES.map((s) => (
             <div key={s.id} className="mkt-svc-row">
-              <div className="svc-code" style={{
+              <div className="svc-code glow-text" style={{
                 fontFamily: "var(--mono)",
-                fontSize: "clamp(32px, 4vw, 64px)",
-                fontWeight: 900, color: "var(--accent)",
+                fontSize: "clamp(40px, 10vw, 64px)",
+                fontWeight: 900,
                 letterSpacing: -2, lineHeight: 1,
-                textShadow: "0 0 24px var(--a44)",
               }}>
                 {s.code}
               </div>
               <div>
                 <h3 style={{
-                  fontSize: "clamp(22px, 3vw, 44px)", fontWeight: 900,
+                  fontSize: "clamp(28px, 8vw, 44px)", fontWeight: 900,
                   letterSpacing: -1, margin: 0, textTransform: "uppercase", lineHeight: 1.05,
                 }}>
                   {s.title}
@@ -317,12 +316,12 @@ export default function HomePage() {
           </div>
           <h2 style={{
             fontFamily: "var(--sans)",
-            fontSize: "clamp(32px, 6vw, 96px)",
+            fontSize: "clamp(44px, 11vw, 96px)",
             fontWeight: 900, letterSpacing: "-0.03em",
             margin: "0 0 clamp(40px, 5vw, 80px)", lineHeight: 0.9,
             textTransform: "uppercase",
           }}>
-            Operators.<br /><span style={{ color: "var(--accent)" }}>Not</span> resellers.
+            Operators.<br /><span className="glow-text">Not</span> resellers.
           </h2>
 
           <div className="mkt-why-grid">
@@ -353,13 +352,13 @@ export default function HomePage() {
           </div>
           <h2 style={{
             fontFamily: "var(--sans)",
-            fontSize: "clamp(40px, 9vw, 140px)",
+            fontSize: "clamp(52px, 13vw, 140px)",
             fontWeight: 900, letterSpacing: "-0.03em", margin: 0,
             lineHeight: 0.9, textTransform: "uppercase",
             maxWidth: 1200, marginInline: "auto",
           }}>
             Watch the{" "}
-            <span style={{ color: "var(--accent)", textShadow: "0 0 40px var(--a88)" }}>dark</span>,<br />
+            <span className="glow-text">dark</span>,<br />
             so you can sleep.
           </h2>
           <div style={{ display: "flex", gap: 14, justifyContent: "center", marginTop: "clamp(28px, 4vw, 48px)", flexWrap: "wrap" }}>
