@@ -15,6 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "./devices",    href: "/devices" },
   { label: "./geoint",     href: "/geoint" },
   { label: "./playbooks",  href: "/playbooks" },
+  { label: "./proposals",  href: "/proposals" },
   { label: "./business",   href: "/business" },
   { label: "./reports",    href: "/business/reports" },
 ];

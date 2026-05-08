@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { GeoIntDashboard } from "./GeoIntDashboard";
+import type { ThreatArc } from "@silent-edge/geospatial";
 
 export default async function GeoIntPage() {
   const supabase = await createClient();
@@ -14,7 +15,7 @@ export default async function GeoIntPage() {
       ? {}
       : { organization_id: profile?.organization_id };
 
-  // Fetch devices that have geolocation data (lat/lon stored in raw_data)
+  // Fetch devices with geolocation data (lat/lon stored in raw_data)
   const { data: devices } = await supabase
     .from("devices")
     .select("id, hostname, device_type, risk_score, is_online, organization_id, raw_data")
@@ -22,16 +23,38 @@ export default async function GeoIntPage() {
     .order("risk_score", { ascending: false })
     .limit(500);
 
-  // Fetch active alerts for threat arcs
-  const { data: alerts } = await supabase
+  // Fetch open alerts with host_ip for threat arc origins
+  const { data: openAlerts } = await supabase
     .from("alerts")
-    .select("id, severity, host_ip, organization_id")
+    .select("id, severity, host_ip, device_id, organization_id")
     .match(orgFilter)
     .eq("status", "open")
     .not("host_ip", "is", null)
-    .limit(100);
+    .limit(200);
 
-  // Transform devices → GeoDevice format
+  // Fetch OTX threat telemetry for geo origins of IOCs
+  const { data: threatFeed } = await supabase
+    .from("threat_telemetry")
+    .select("ioc_value, ioc_type, geo_lat, geo_lon, geo_country, threat_name")
+    .eq("ioc_type", "ip")
+    .not("geo_lat", "is", null)
+    .not("geo_lon", "is", null)
+    .limit(500);
+
+  // Build fast IOC lookup map: ip → geo coords
+  const iocGeoMap = new Map<string, { lat: number; lon: number; name: string }>();
+  for (const ioc of threatFeed ?? []) {
+    if (ioc.geo_lat != null && ioc.geo_lon != null) {
+      iocGeoMap.set(ioc.ioc_value, {
+        lat: ioc.geo_lat,
+        lon: ioc.geo_lon,
+        name: ioc.threat_name ?? ioc.ioc_value,
+      });
+    }
+  }
+
+  // Build device geo lookup: device_id → coords
+  const deviceGeoMap = new Map<string, { lat: number; lon: number }>();
   const geoDevices = (devices ?? [])
     .filter((d) => {
       const raw = d.raw_data as Record<string, unknown>;
@@ -39,6 +62,7 @@ export default async function GeoIntPage() {
     })
     .map((d) => {
       const raw = d.raw_data as { lat: number; lon: number; orgName?: string; fingerprintId?: string };
+      deviceGeoMap.set(d.id, { lat: raw.lat, lon: raw.lon });
       return {
         id: d.id,
         hostname: d.hostname,
@@ -52,6 +76,38 @@ export default async function GeoIntPage() {
         fingerprintId: raw.fingerprintId,
       };
     });
+
+  // Build threat arcs: OTX-matched alert IPs → victim device coords
+  const threatArcs: ThreatArc[] = [];
+  for (const alert of openAlerts ?? []) {
+    const hostIp = alert.host_ip as string | null;
+    if (!hostIp) continue;
+
+    // Find attacker origin from OTX feed
+    const iocGeo = iocGeoMap.get(hostIp);
+    if (!iocGeo) continue;
+
+    // Find target device coords
+    let targetGeo: { lat: number; lon: number } | undefined;
+    if (alert.device_id) {
+      targetGeo = deviceGeoMap.get(alert.device_id);
+    }
+    // Fallback: pick first device in same org
+    if (!targetGeo) {
+      const orgDevice = geoDevices.find((d) => d.orgId === alert.organization_id);
+      if (orgDevice) targetGeo = { lat: orgDevice.lat, lon: orgDevice.lon };
+    }
+    if (!targetGeo) continue;
+
+    threatArcs.push({
+      sourceLat: iocGeo.lat,
+      sourceLon: iocGeo.lon,
+      targetLat: targetGeo.lat,
+      targetLon: targetGeo.lon,
+      severity: alert.severity as ThreatArc["severity"],
+      label: iocGeo.name,
+    });
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
@@ -78,11 +134,11 @@ export default async function GeoIntPage() {
           }}
         >
           {profile?.role === "admin" ? "GLOBAL PULSE — ALL CLIENTS" : "TACTICAL DEVICE MONITOR"}
-          {" "}· {geoDevices.length} GEOLOCATED DEVICES
+          {" "}· {geoDevices.length} GEOLOCATED DEVICES · {threatArcs.length} ACTIVE THREAT ARCS
         </p>
       </div>
 
-      <GeoIntDashboard devices={geoDevices} />
+      <GeoIntDashboard devices={geoDevices} arcs={threatArcs} />
     </div>
   );
 }

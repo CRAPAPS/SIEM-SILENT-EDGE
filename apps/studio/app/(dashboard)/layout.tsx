@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SocBar } from "@/components/chrome/SocBar";
 import { SideNav } from "@/components/chrome/SideNav";
+import { FingerprintCapture } from "@/components/chrome/FingerprintCapture";
 
 export default async function DashboardLayout({
   children,
@@ -38,6 +39,7 @@ export default async function DashboardLayout({
 
   return (
     <>
+      <FingerprintCapture />
       <SocBar orgName={orgName} isAdmin={role === "admin"} />
       <SideNav role={role} userEmail={user.email} />
       <main className="app-main">{children}</main>

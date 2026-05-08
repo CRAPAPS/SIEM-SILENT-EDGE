@@ -103,16 +103,30 @@ export function GlobeView({
         // Lighting
         const ambient = new AmbientLight(0xffffff, 0.4);
         scene.add(ambient);
-        const directional = new DirectionalLight(0x3d7eff, 1.2);
+        const directional = new DirectionalLight(new Color(getAccent()), 1.2);
         directional.position.set(1, 1, 1);
         scene.add(directional);
+
+        // React to accent-color changes (stored in localStorage as 'se-accent')
+        const onStorage = (e: StorageEvent) => {
+          if (e.key !== "se-accent" || !e.newValue) return;
+          (g as unknown as { atmosphereColor: (c: string) => unknown }).atmosphereColor(e.newValue);
+          directional.color.set(e.newValue);
+        };
+        window.addEventListener("storage", onStorage);
+
+        // Read current accent from CSS custom property (fallback to default blue)
+        const getAccent = () =>
+          getComputedStyle(document.documentElement)
+            .getPropertyValue("--accent")
+            .trim() || "#3d7eff";
 
         // Globe
         const g = new ThreeGlobe()
           .globeImageUrl(
             "https://unpkg.com/three-globe@2.31.0/example/img/earth-dark.jpg"
           )
-          .atmosphereColor("#3d7eff")
+          .atmosphereColor(getAccent())
           .atmosphereAltitude(0.12);
 
         // set transparent background via direct property (newer three-globe types omit this method)
@@ -182,6 +196,7 @@ export function GlobeView({
         (containerRef.current as unknown as { _cleanup?: () => void })._cleanup = () => {
           cancelAnimationFrame(animId);
           window.removeEventListener("resize", onResize);
+          window.removeEventListener("storage", onStorage);
           renderer.dispose();
           renderer.domElement.remove();
         };
