@@ -527,12 +527,12 @@ html, body {
   animation: logo-ring 5.5s linear infinite reverse;
 }
 
-/* Logo image — octagonal clip + breathing drop-shadow */
+/* Logo image — circle + breathing drop-shadow */
 .hero-logo-glow {
   position: relative;
   z-index: 2;
-  width: 80%;
-  height: 80%;
+  width: 96%;
+  height: 96%;
   animation: logo-glow-pulse 4s ease-in-out infinite;
 }
 .hero-logo-octa {
@@ -688,6 +688,11 @@ html, body {
   .nav-links       { display: none !important; }
   .nav-login       { display: none !important; }
   .nav-hamburger   { display: flex !important; align-items: center; justify-content: center; }
+  /* Hero mobile spacing — more breathing room */
+  .mkt-hero        { padding-top: 56px; padding-bottom: 48px; }
+  .mkt-hero-upper  { gap: 36px; }
+  /* Hero tag — reduce letter-spacing so text fits on one line */
+  .hero-tag        { letter-spacing: 0.5px !important; font-size: 9px !important; }
 }
 
 /* ── Ticker always scrolls ── */

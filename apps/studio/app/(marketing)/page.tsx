@@ -180,7 +180,7 @@ export default function HomePage() {
           <div className="mkt-hero-upper">
             <div className="hero-headline-col">
               {/* Tag */}
-              <div style={{
+              <div className="hero-tag" style={{
                 display: "flex", alignItems: "center", gap: 16,
                 fontFamily: "var(--mono)", fontSize: 11, color: "var(--accent)",
                 letterSpacing: 3, marginBottom: 28,
