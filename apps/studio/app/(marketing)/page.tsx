@@ -84,6 +84,35 @@ function LogStream() {
   );
 }
 
+/* ─── Hero Logo ─────────────────────────────────────────────────────────────── */
+function HeroLogo() {
+  return (
+    <div className="hero-logo-root" aria-hidden>
+      {/* Outer rotating ring */}
+      <div className="hero-ring-outer" />
+      {/* Inner counter-rotating ring */}
+      <div className="hero-ring-inner" />
+      {/* Cardinal spark nodes */}
+      <span className="hero-spark hero-spark-n" />
+      <span className="hero-spark hero-spark-e" />
+      <span className="hero-spark hero-spark-s" />
+      <span className="hero-spark hero-spark-w" />
+      {/* Targeting corner brackets */}
+      <span className="hero-corner hero-corner-tl" />
+      <span className="hero-corner hero-corner-tr" />
+      <span className="hero-corner hero-corner-bl" />
+      <span className="hero-corner hero-corner-br" />
+      {/* Logo image — octagonal clip, accent drop-shadow */}
+      <div className="hero-logo-glow">
+        <div className="hero-logo-octa">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/shel-logo.jpg" alt="" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Data ──────────────────────────────────────────────────────────────────── */
 const SERVICES = [
   {
@@ -147,33 +176,40 @@ export default function HomePage() {
         }} />
 
         <div className="mkt-max" style={{ position: "relative" }}>
-          {/* Tag */}
-          <div style={{
-            display: "flex", alignItems: "center", gap: 16,
-            fontFamily: "var(--mono)", fontSize: 11, color: "var(--accent)",
-            letterSpacing: 3, marginBottom: 28,
-          }}>
-            <span style={{
-              width: 8, height: 8, background: "var(--accent)", borderRadius: 4,
-              boxShadow: "0 0 12px var(--a88)", display: "inline-block", flexShrink: 0,
-            }} />
-            [ managed_soc · incident_response · threat_intel ]
+          {/* ── Upper: headline left · logo right (desktop only) ── */}
+          <div className="mkt-hero-upper">
+            <div className="hero-headline-col">
+              {/* Tag */}
+              <div style={{
+                display: "flex", alignItems: "center", gap: 16,
+                fontFamily: "var(--mono)", fontSize: 11, color: "var(--accent)",
+                letterSpacing: 3, marginBottom: 28,
+              }}>
+                <span style={{
+                  width: 8, height: 8, background: "var(--accent)", borderRadius: 4,
+                  boxShadow: "0 0 12px var(--a88)", display: "inline-block", flexShrink: 0,
+                }} />
+                [ managed_soc · incident_response · threat_intel ]
+              </div>
+              {/* Cinematic headline */}
+              <h1 style={{
+                fontFamily: "var(--sans)",
+                fontSize: "clamp(68px, 18vw, 160px)",
+                lineHeight: 0.88, fontWeight: 900, letterSpacing: "-0.03em",
+                margin: 0, textTransform: "uppercase",
+              }}>
+                <span style={{ display: "block" }}>Fortify</span>
+                <span style={{ display: "block" }}>your</span>
+                <span style={{ display: "block" }}>digital</span>
+                <span className="glow-text" style={{ display: "block" }}>empire.</span>
+              </h1>
+            </div>
+            <div className="hero-logo-col">
+              <HeroLogo />
+            </div>
           </div>
 
-          {/* Cinematic headline */}
-          <h1 style={{
-            fontFamily: "var(--sans)",
-            fontSize: "clamp(68px, 18vw, 160px)",
-            lineHeight: 0.88, fontWeight: 900, letterSpacing: "-0.03em",
-            margin: 0, textTransform: "uppercase",
-          }}>
-            <span style={{ display: "block" }}>Fortify</span>
-            <span style={{ display: "block" }}>your</span>
-            <span style={{ display: "block" }}>digital</span>
-            <span className="glow-text" style={{ display: "block" }}>empire.</span>
-          </h1>
-
-          {/* Two-column: subhead/CTAs left, terminal right */}
+          {/* ── Lower: subhead/CTAs left, terminal right ── */}
           <div className="mkt-hero-grid" style={{ marginTop: 56 }}>
             <div>
               <p style={{
