@@ -13,6 +13,15 @@
   --border: rgba(244, 246, 245, 0.08);
   --accent: #3d7eff;
   --accent-alpha: rgba(61, 126, 255, 0.12);
+  /* Pre-computed accent alpha variants — updated by AccentProvider JS */
+  --a5:  rgba(61, 126, 255, 0.05);
+  --a10: rgba(61, 126, 255, 0.10);
+  --a15: rgba(61, 126, 255, 0.15);
+  --a20: rgba(61, 126, 255, 0.20);
+  --a33: rgba(61, 126, 255, 0.33);
+  --a44: rgba(61, 126, 255, 0.44);
+  --a55: rgba(61, 126, 255, 0.55);
+  --a88: rgba(61, 126, 255, 0.88);
   --sans:   "Inter", system-ui, -apple-system, sans-serif;
   --mono:   "JetBrains Mono", ui-monospace, monospace;
   --sev-info:  #3d7eff;
@@ -367,3 +376,177 @@ html, body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(244, 246, 245, 0.15); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(244, 246, 245, 0.3); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MARKETING — Responsive Layout System
+   Breakpoints: mobile <640  |  tablet 640–1024  |  desktop >1024
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Spacing ── */
+.mkt-pad       { padding-left: 48px; padding-right: 48px; }
+.mkt-section   { padding-top: 140px; padding-bottom: 80px; }
+.mkt-section-sm { padding-top: 60px; padding-bottom: 60px; }
+.mkt-hero      { padding: 64px 48px 100px; }
+.mkt-max       { max-width: 1400px; margin-left: auto; margin-right: auto; width: 100%; }
+
+/* ── Grid systems ── */
+.mkt-hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.mkt-svc-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr;
+  gap: 56px;
+  align-items: start;
+  padding: 56px 0;
+  border-top: 1px solid var(--border);
+}
+
+.mkt-why-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+}
+
+.mkt-footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 32px;
+  padding-bottom: 32px;
+}
+
+/* ── SOC bar visibility ── */
+.soc-hide-tablet,
+.soc-hide-mobile { /* shown by default */ }
+
+/* ── Nav ── */
+.nav-links    { display: flex; gap: 2px; }
+.nav-ctas     { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+.nav-hamburger{ display: none; }
+
+/* ── Mobile menu overlay ── */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #050607;
+  flex-direction: column;
+  padding: 24px 20px;
+  overflow-y: auto;
+}
+.mobile-menu.open { display: flex; }
+
+/* ── Accent-driven glows (use CSS vars updated by AccentProvider) ── */
+.accent-glow-sm  { box-shadow: 0 0 12px var(--a33); }
+.accent-glow-md  { box-shadow: 0 0 24px var(--a44); }
+.accent-glow-lg  { box-shadow: 0 0 40px var(--a55); }
+.accent-text-glow { text-shadow: 0 0 40px var(--a88); }
+.accent-bg-radial { background: radial-gradient(circle at 50% 50%, var(--a15) 0%, transparent 60%); }
+.accent-btn-glow  { box-shadow: 0 0 32px var(--a55); }
+
+/* ─────────────────────────────────────────────────────
+   TABLET  640px – 1024px
+   ───────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .mkt-pad        { padding-left: 32px; padding-right: 32px; }
+  .mkt-section    { padding-top: 80px; padding-bottom: 56px; }
+  .mkt-section-sm { padding-top: 40px; padding-bottom: 40px; }
+  .mkt-hero       { padding: 48px 32px 72px; }
+
+  .mkt-svc-row {
+    grid-template-columns: 80px 1fr;
+    gap: 24px;
+    padding: 40px 0;
+  }
+  /* Description spans both columns on tablet */
+  .mkt-svc-row > .svc-desc { grid-column: 1 / -1; }
+
+  .mkt-footer-grid { grid-template-columns: 1fr 1fr; }
+
+  .soc-hide-tablet { display: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────
+   MOBILE  < 640px
+   ───────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  .mkt-pad        { padding-left: 20px; padding-right: 20px; }
+  .mkt-section    { padding-top: 56px; padding-bottom: 40px; }
+  .mkt-section-sm { padding-top: 32px; padding-bottom: 32px; }
+  .mkt-hero       { padding: 32px 20px 48px; }
+
+  .mkt-hero-grid  { grid-template-columns: 1fr; gap: 28px; }
+  .mkt-svc-row    { grid-template-columns: 1fr; gap: 12px; padding: 32px 0; }
+  .mkt-svc-row > .svc-code { /* still shows */ }
+  .mkt-why-grid   { grid-template-columns: 1fr; }
+  .mkt-footer-grid { grid-template-columns: 1fr; gap: 24px; }
+
+  .soc-hide-mobile { display: none !important; }
+  .nav-links      { display: none !important; }
+  .nav-ctas       { display: none !important; }
+  .nav-hamburger  { display: flex !important; align-items: center; justify-content: center; margin-left: auto; }
+}
+
+/* ── Ticker always scrolls ── */
+.mkt-ticker-track {
+  display: flex;
+  gap: 60px;
+  padding: 18px 0;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  animation: noir-tick 40s linear infinite;
+}
+
+/* ── Page header backgrounds (cinematic) ── */
+.mkt-page-hero {
+  padding: 80px 48px 64px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 1024px) { .mkt-page-hero { padding: 56px 32px 48px; } }
+@media (max-width: 639px)  { .mkt-page-hero { padding: 40px 20px 36px; } }
+
+/* ── Inner page 2-col (contact etc) ── */
+.mkt-2col-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 80px 48px;
+}
+
+@media (max-width: 1024px) { .mkt-2col-page { gap: 48px; padding: 56px 32px; } }
+@media (max-width: 639px)  { .mkt-2col-page { grid-template-columns: 1fr; gap: 32px; padding: 36px 20px; } }
+
+/* ── 3-col feature grid ── */
+.mkt-3col-feat {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+}
+
+@media (max-width: 1024px) { .mkt-3col-feat { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 639px)  { .mkt-3col-feat { grid-template-columns: 1fr; } }
+
+/* ── 2-col services grid ── */
+.mkt-2col-svc {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+}
+
+@media (max-width: 639px) { .mkt-2col-svc { grid-template-columns: 1fr; } }

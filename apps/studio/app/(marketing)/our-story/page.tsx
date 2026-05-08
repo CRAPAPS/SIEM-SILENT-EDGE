@@ -1,295 +1,112 @@
+"use client";
+
 import Link from "next/link";
-import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Our Story | SHEL INFOSEC",
-  description: "Operators. Not resellers. Based in Cape Town, operating globally.",
-};
-
-const VALUES = [
-  {
-    title: "Operator accountability",
-    body: "Every analyst takes personal ownership of every incident they handle. No ticket queues, no handoff culture. You speak to the person watching your network.",
-  },
-  {
-    title: "Transparency by default",
-    body: "Monthly reporting shows you exactly what happened, what we did, and what the threat landscape looks like for your sector. No vague PDFs.",
-  },
-  {
-    title: "No vendor lock-in",
-    body: "We work with your existing stack. If we recommend a tool, it is because it is the right tool — not because we earn a margin on the licence.",
-  },
-  {
-    title: "SME first",
-    body: "We built our pricing, our tooling, and our processes specifically for organisations that are too big to ignore security and too smart to overpay for it.",
-  },
-];
-
-const CERTIFICATIONS = [
-  "CompTIA CySA+",
-  "CompTIA Security+",
-  "MITRE ATT&CK Practitioner",
-  "ISO/IEC 27001 Awareness",
-  "SABSA Foundation",
-  "Zero Trust Architecture",
+const STATS = [
+  ["2021", "FOUNDED"],
+  ["40+",  "CLIENTS"],
+  ["4",    "TIME ZONES"],
 ];
 
 export default function OurStoryPage() {
   return (
     <>
-      {/* Header */}
-      <section style={{ padding: "5rem 2rem 4rem", maxWidth: 1280, margin: "0 auto" }}>
-        <div
-          style={{
-            fontFamily: "var(--mono)",
-            fontSize: "9px",
-            letterSpacing: "0.15em",
-            color: "var(--accent)",
+      <section className="mkt-page-hero mkt-pad" style={{ background: "var(--bg)" }}>
+        <div className="mkt-max">
+          <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--accent)", letterSpacing: 3, marginBottom: 24 }}>
+            ~ / our-story
+          </div>
+          <h1 style={{
+            fontFamily: "var(--sans)", fontSize: "clamp(36px, 7vw, 120px)",
+            fontWeight: 900, letterSpacing: "-0.03em", margin: 0, lineHeight: 0.9,
             textTransform: "uppercase",
-            marginBottom: "0.75rem",
-          }}
-        >
-          [ OUR STORY ]
+          }}>
+            Born from a gap.<br />
+            <span style={{ color: "var(--accent)", textShadow: "0 0 40px var(--a55)" }}>
+              Built for the mid-market.
+            </span>
+          </h1>
         </div>
-        <h1
-          style={{
-            fontFamily: "var(--mono)",
-            fontSize: "clamp(1.75rem, 4vw, 3rem)",
-            fontWeight: 800,
-            color: "var(--fg)",
-            margin: "0 0 1.5rem",
-            letterSpacing: "-0.02em",
-            lineHeight: 1.15,
-          }}
-        >
-          Built by operators,
-          <br />
-          <span style={{ color: "var(--accent)" }}>for operators.</span>
-        </h1>
       </section>
 
-      {/* Story body */}
-      <section
-        style={{
-          padding: "0 2rem 5rem",
-          maxWidth: 1280,
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "2fr 1fr",
-          gap: "4rem",
-          alignItems: "start",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontFamily: "var(--mono)",
-              fontSize: "12px",
-              color: "var(--muted)",
-              lineHeight: 2,
-            }}
-          >
-            <p>
-              SHEL INFOSEC was founded in Cape Town with one conviction: that
-              small and medium enterprises deserve the same quality of security
-              operations as the enterprises paying seven-figure retainer fees —
-              without the seven-figure price tag attached.
-            </p>
-            <p>
-              The team is built from practitioners who have worked in SOC
-              environments, conducted red-team engagements, and responded to
-              live breaches. We do not resell other companies&apos; products under
-              a SHEL INFOSEC logo. We operate our own tooling, write our own
-              playbooks, and stand behind every recommendation with our own
-              analysts.
-            </p>
-            <p>
-              The Silent Edge platform is the product of years of building the
-              monitoring infrastructure we wished we had access to when working
-              inside client environments. One agent. Real-time telemetry.
-              Automated remediation. Transparent pricing. Deployed and managed
-              by the same team that built it.
-            </p>
-            <p>
-              Today SHEL INFOSEC protects 40+ clients across multiple sectors,
-              processes 14.2 million security events per day, and maintains a
-              mean time to response of under five minutes — around the clock,
-              every day of the year.
-            </p>
-          </div>
+      <section className="mkt-pad" style={{ paddingTop: 64, paddingBottom: 80, background: "var(--bg)" }}>
+        <div style={{ maxWidth: 920, margin: "0 auto", fontSize: "clamp(15px, 2vw, 19px)", lineHeight: 1.7, color: "rgba(244,246,245,0.8)" }}>
+          <p>
+            SHEL infosec did not start in a boardroom. It started with a frustration: small and medium
+            businesses were being priced out of real cybersecurity, and told to make do with antivirus and hope.
+          </p>
+          <p>
+            We built SHEL to close that gap. By running a remote SOC with analysts who know what they are
+            looking at — and pairing it with a hardened agent stack (Silent Edge) that does most of the rote
+            work — we deliver enterprise-grade posture for a fraction of what big consultancies charge.
+          </p>
+          <p>
+            Today, we operate from Cape Town, watching networks in four time zones, working with partners
+            like Thiink VP and ThiinkTANK to extend our reach.
+          </p>
 
-          <div
-            style={{
-              marginTop: "2.5rem",
-              display: "flex",
-              gap: "1rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <Link href="/contact" className="btn btn-accent">
-              Work With Us ◢
-            </Link>
-            <Link
-              href="/services"
-              className="btn"
-              style={{ background: "transparent", border: "1px solid var(--border)", color: "var(--fg)" }}
-            >
-              View Services →
-            </Link>
-          </div>
-        </div>
-
-        {/* Sidebar */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {/* Stats */}
-          <div className="terminal-card">
-            <div className="terminal-card-header">
-              <span className="dot" />
-              <span>team.stats</span>
-            </div>
-            <div className="terminal-card-body">
-              {[
-                ["Active Clients", "40+"],
-                ["Events / Day", "14.2M"],
-                ["MTTR", "00:04:12"],
-                ["SOC Uptime", "99.998%"],
-                ["Open Breaches", "0"],
-                ["HQ", "Cape Town, ZA"],
-                ["Coverage", "Global"],
-              ].map(([label, val]) => (
-                <div
-                  key={label}
-                  style={{
-                    fontFamily: "var(--mono)",
-                    fontSize: "10px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "0.375rem 0",
-                    borderBottom: "1px solid var(--border)",
-                  }}
-                >
-                  <span style={{ color: "var(--muted)" }}>{label}</span>
-                  <span style={{ color: "var(--fg)" }}>{val}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Certifications */}
-          <div className="terminal-card">
-            <div className="terminal-card-header">
-              <span className="dot" />
-              <span>certifications</span>
-            </div>
-            <div className="terminal-card-body">
-              {CERTIFICATIONS.map((cert) => (
-                <div
-                  key={cert}
-                  style={{
-                    fontFamily: "var(--mono)",
-                    fontSize: "10px",
-                    color: "rgba(244,246,245,0.6)",
-                    display: "flex",
-                    gap: "0.75rem",
-                    marginBottom: "0.5rem",
-                    alignItems: "center",
-                  }}
-                >
-                  <span style={{ color: "var(--sev-ok)", fontSize: 8 }}>●</span>
-                  {cert}
-                </div>
-              ))}
-            </div>
+          <div className="mkt-3col-feat" style={{ marginTop: 64 }}>
+            {STATS.map(([v, k]) => (
+              <div key={k} style={{ background: "var(--bg)", padding: "clamp(28px, 4vw, 40px) clamp(20px, 3vw, 28px)" }}>
+                <div style={{
+                  fontSize: "clamp(40px, 6vw, 64px)", fontWeight: 900,
+                  letterSpacing: -2, color: "var(--accent)", lineHeight: 1,
+                  textShadow: "0 0 24px var(--a44)",
+                }}>{v}</div>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--muted)", letterSpacing: "1.5px", marginTop: 10 }}>{k}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Values */}
-      <section
-        style={{
-          padding: "5rem 2rem",
-          background: "var(--bg-2)",
-          borderTop: "1px solid var(--border)",
-        }}
-      >
-        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <div style={{ marginBottom: "2.5rem" }}>
-            <div
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: "9px",
-                letterSpacing: "0.15em",
-                color: "var(--accent)",
-                textTransform: "uppercase",
-                marginBottom: "0.75rem",
-              }}
-            >
-              [ VALUES ]
-            </div>
-            <h2
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: "clamp(1.25rem, 2.5vw, 2rem)",
-                fontWeight: 700,
-                color: "var(--fg)",
-                margin: 0,
-              }}
-            >
-              How we operate.
-            </h2>
+      <section className="mkt-section mkt-pad" style={{ borderTop: "1px solid var(--border)", background: "var(--bg)" }}>
+        <div className="mkt-max">
+          <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--accent)", letterSpacing: 3, marginBottom: 24 }}>
+            # values
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-              gap: "1.5rem",
-            }}
-          >
-            {VALUES.map((v, i) => (
-              <div
-                key={v.title}
-                style={{
-                  padding: "1.5rem",
-                  background: "var(--bg-3)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "2px",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--mono)",
-                    fontSize: "10px",
-                    color: "var(--accent)",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--mono)",
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    color: "var(--fg)",
-                    marginBottom: "0.75rem",
-                  }}
-                >
-                  {v.title}
-                </div>
-                <p
-                  style={{
-                    fontFamily: "var(--mono)",
-                    fontSize: "11px",
-                    color: "var(--muted)",
-                    lineHeight: 1.8,
-                    margin: 0,
-                  }}
-                >
-                  {v.body}
-                </p>
+          <h2 style={{
+            fontFamily: "var(--sans)", fontSize: "clamp(28px, 4vw, 64px)",
+            fontWeight: 900, letterSpacing: "-0.03em", margin: "0 0 48px", lineHeight: 0.9, textTransform: "uppercase",
+          }}>
+            Operator principles.
+          </h2>
+          <div className="mkt-why-grid">
+            {[
+              { t: "Ownership", d: "Every alert, every incident, every remediation — owned from start to finish. No handoffs." },
+              { t: "Transparency", d: "You see what we see. Live dashboards, real metrics, no filtered reporting." },
+              { t: "Integrity", d: "We tell you what you need to hear, not what sounds good. Assessments are honest." },
+              { t: "Precision", d: "Noise reduction is a discipline. We tune, threshold, and maintain — constantly." },
+            ].map((w, i) => (
+              <div key={w.t} style={{ background: "var(--bg)", padding: "clamp(24px, 3vw, 40px) clamp(20px, 3vw, 36px)" }}>
+                <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--accent)", letterSpacing: 2, marginBottom: 16 }}>0{i + 1} /</div>
+                <div style={{ fontSize: "clamp(18px, 2vw, 26px)", fontWeight: 700, letterSpacing: -0.5, marginBottom: 12, textTransform: "uppercase" }}>{w.t}</div>
+                <div style={{ fontSize: "clamp(13px, 1.5vw, 15px)", color: "var(--muted)", lineHeight: 1.65 }}>{w.d}</div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mkt-section mkt-pad" style={{ textAlign: "center", borderTop: "1px solid var(--border)", background: "var(--bg)", position: "relative" }}>
+        <div className="accent-bg-radial" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
+        <div style={{ position: "relative" }}>
+          <h2 style={{
+            fontFamily: "var(--sans)", fontSize: "clamp(28px, 4vw, 64px)",
+            fontWeight: 900, letterSpacing: "-0.03em", margin: "0 0 32px", textTransform: "uppercase",
+          }}>
+            Want to work with us?
+          </h2>
+          <Link href="/contact" style={{
+            fontFamily: "var(--mono)", fontSize: 13, letterSpacing: "1.5px", fontWeight: 700,
+            background: "var(--accent)", color: "#001a10",
+            padding: "16px 28px", textDecoration: "none", display: "inline-block",
+            boxShadow: "0 0 32px var(--a55)",
+          }}>
+            ./get-in-touch →
+          </Link>
         </div>
       </section>
     </>
