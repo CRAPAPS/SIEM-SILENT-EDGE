@@ -44,8 +44,8 @@ function MarketingHeader() {
         {/* ── SOC command bar ── */}
         <div style={{
           fontFamily: "var(--mono)", fontSize: "10.5px", letterSpacing: "1.5px",
-          borderBottom: `1px solid ${bdr}`, padding: "8px 48px",
-          display: "flex", gap: 24, color: muted, background: "#0a0c0e",
+          borderBottom: `1px solid ${bdr}`, padding: "8px clamp(20px, 5vw, 48px)",
+          display: "flex", gap: "clamp(12px, 2vw, 24px)", color: muted, background: "#0a0c0e",
           alignItems: "center", overflowX: "hidden",
         }}>
           <span style={{ flexShrink: 0 }}>
@@ -80,7 +80,7 @@ function MarketingHeader() {
 
         {/* ── CLI nav ── */}
         <nav style={{
-          padding: "16px 48px", display: "flex", alignItems: "center", gap: 24,
+          padding: "14px clamp(20px, 5vw, 48px)", display: "flex", alignItems: "center", gap: "clamp(12px, 2vw, 24px)",
           borderBottom: `1px solid ${bdr}`,
         }}>
           {/* Logo */}
