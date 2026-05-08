@@ -194,9 +194,8 @@ html, body {
 @keyframes noir-tick  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes noir-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* ── Cyberpunk CRT signal-failure glitch, 7s loop ──
-   Breathing glow → violent channel split + jitter → data flicker → halo surge
-   Red (#ff5155 = sev-alert) / cyan (#00dfff) are fixed CRT artifact colors;
+/* ── Cyberpunk CRT glitch, 12s loop — subtle channel split, quick single burst
+   Red (#ff5155) / cyan (#00dfff) are fixed CRT artifact colors;
    the main glow still tracks the live --accent CSS variable.               */
 @keyframes accent-glitch {
   /* ── breathing: glow pulses softly between bursts ── */
@@ -204,72 +203,49 @@ html, body {
     text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 32px var(--a88), 0 0 64px var(--a44);
     transform: none; filter: none; opacity: 1;
   }
-  25%  { text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 52px var(--a88), 0 0 100px var(--a55); }
-  50%  { text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 32px var(--a88), 0 0 64px var(--a44); }
+  30%  { text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 44px var(--a88), 0 0 80px var(--a44); }
+  60%  { text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 32px var(--a88), 0 0 64px var(--a44); }
 
   /* ── pre-glitch settle ── */
-  67%  {
+  74%  {
     text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 32px var(--a88), 0 0 64px var(--a44);
     transform: none; filter: none; opacity: 1;
   }
 
-  /* ── BURST 1: hard left jitter + wide CRT channel split ── */
-  68.5% {
-    text-shadow: -12px 0 0 #ff5155, 12px 0 0 #00dfff, 0 0 60px var(--a88);
-    transform: translateX(-9px) skewX(-2.5deg);
-    filter: brightness(2.8);
+  /* ── BURST: single quick CRT channel split + light jitter ── */
+  75% {
+    text-shadow: -6px 0 0 #ff5155, 6px 0 0 #00dfff, 0 0 48px var(--a88);
+    transform: translateX(-4px) skewX(-1deg);
+    filter: brightness(1.6);
   }
-  69.2% {
-    text-shadow: 10px 0 0 #ff5155, -10px 0 0 #00dfff, 0 0 40px var(--a88);
-    transform: translateX(6px) skewX(1.5deg);
-    filter: brightness(1.3);
+  76% {
+    text-shadow: 5px 0 0 #ff5155, -5px 0 0 #00dfff, 0 0 36px var(--a88);
+    transform: translateX(3px);
+    filter: brightness(1.1);
   }
-  69.8% {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 40px var(--a88), 0 0 80px var(--a44);
-    transform: translateX(-2px); filter: none;
-  }
-  70.3% { transform: none; }
-
-  /* ── BURST 2: opposite direction, vertical drift, brighter burn ── */
-  71.5% {
-    text-shadow: -14px 3px 0 #ff5155, 14px -3px 0 #00dfff, 0 0 80px var(--a88);
-    transform: translateX(11px) skewX(3deg);
-    filter: brightness(3.5);
-  }
-  72%   {
-    text-shadow: 9px 0 0 #ff5155, -9px 0 0 #00dfff, 0 0 50px var(--a88);
-    transform: translateX(-6px) skewX(-1deg);
-    filter: brightness(1.5);
-  }
-  72.6% {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 40px var(--a88), 0 0 80px var(--a44);
+  77% {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 32px var(--a88), 0 0 64px var(--a44);
     transform: none; filter: none;
   }
 
-  /* ── DATA FLICKER: rapid signal dropout ── */
-  73.5%  { opacity: 1; }
-  73.7%  { opacity: 0.04; }
-  73.9%  { opacity: 1; }
-  74.1%  { opacity: 0.45; }
-  74.3%  { opacity: 1; }
-  74.5%  { opacity: 0.15; }
-  74.7%  { opacity: 1; }
+  /* ── brief flicker ── */
+  78%   { opacity: 1; }
+  78.4% { opacity: 0.3; }
+  78.8% { opacity: 1; }
 
-  /* ── HALO SURGE: energy dissipates outward ── */
-  76.5% {
+  /* ── halo ripple ── */
+  82% {
     text-shadow:
       0 2px 4px rgba(0,0,0,0.9),
-      0 0 80px var(--a88),
-      0 0 160px var(--a55),
-      0 0 300px var(--a33);
-    filter: brightness(1.4);
+      0 0 56px var(--a88),
+      0 0 110px var(--a44),
+      0 0 180px var(--a20);
   }
-  78.5% {
+  85% {
     text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 32px var(--a88), 0 0 64px var(--a44);
-    filter: none;
   }
 
-  /* ── return to breathing ── */
+  /* ── return to calm ── */
   100% {
     text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 32px var(--a88), 0 0 64px var(--a44);
     transform: none; filter: none; opacity: 1;
@@ -280,7 +256,7 @@ html, body {
 .glow-text {
   color: var(--accent);
   text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 32px var(--a88), 0 0 64px var(--a44);
-  animation: accent-glitch 7s ease-in-out infinite;
+  animation: accent-glitch 12s ease-in-out infinite;
 }
 
 .sev-badge {
