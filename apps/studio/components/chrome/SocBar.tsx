@@ -100,16 +100,31 @@ export function SocBar({ orgName, isAdmin }: SocBarProps) {
 
       <span style={{ color: "var(--border)" }}>|</span>
 
-      <span
-        style={{
-          fontFamily: "var(--mono)",
-          fontSize: "9px",
-          letterSpacing: "0.08em",
-          color: "var(--muted)",
-        }}
-      >
-        SHEL/infosec
-      </span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {/* Animated site logo */}
+        <div style={{ position: "relative", width: 22, height: 22, flexShrink: 0 }}>
+          <div className="site-logo-ring-outer" />
+          <div className="site-logo-ring-inner" />
+          <span className="site-logo-corner site-logo-corner-tl" />
+          <span className="site-logo-corner site-logo-corner-tr" />
+          <span className="site-logo-corner site-logo-corner-bl" />
+          <span className="site-logo-corner site-logo-corner-br" />
+          <div className="site-logo-img">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/shel-logo.jpg" alt="SHEL infosec" />
+          </div>
+        </div>
+        <span
+          style={{
+            fontFamily: "var(--mono)",
+            fontSize: "9px",
+            letterSpacing: "0.08em",
+            color: "var(--muted)",
+          }}
+        >
+          SHEL/infosec
+        </span>
+      </div>
     </header>
   );
 }

@@ -741,7 +741,8 @@ html, body {
   .nav-hamburger   { display: flex !important; align-items: center; justify-content: center; }
   /* Hero mobile spacing — more breathing room */
   .mkt-hero        { padding-top: 56px; padding-bottom: 48px; }
-  .mkt-hero-upper  { gap: 36px; }
+  .mkt-hero-upper  { gap: 56px; }
+  .hero-logo-col   { padding-bottom: 8px; }
   /* Hero tag — reduce letter-spacing so text fits on one line */
   .hero-tag        { letter-spacing: 0.5px !important; font-size: 9px !important; }
 }

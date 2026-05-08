@@ -161,8 +161,11 @@ function MarketingHeader() {
       <div className={`mobile-menu${menuOpen ? " open" : ""}`}>
         {/* Top row: logo + close */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 40 }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: 13, fontWeight: 700, letterSpacing: 2, color: "var(--fg)" }}>
-            SHEL<span style={{ color: "var(--accent)" }}>/infosec</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <SiteLogo size={48} />
+            <div style={{ fontFamily: "var(--mono)", fontSize: 13, fontWeight: 700, letterSpacing: 2, color: "var(--fg)" }}>
+              SHEL<span style={{ color: "var(--accent)" }}>/infosec</span>
+            </div>
           </div>
           <button onClick={() => setMenuOpen(false)} style={{
             background: "transparent", border: "none", color: "var(--fg)",
