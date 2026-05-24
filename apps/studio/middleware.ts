@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+﻿import { createServerClient } from "@supabase/ssr";
 import type { CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -45,6 +45,7 @@ export async function middleware(request: NextRequest) {
     pathname === "/" ||
     pathname.startsWith("/services") ||
     pathname.startsWith("/silent-edge") ||
+    pathname.startsWith("/work") ||
     pathname.startsWith("/our-story") ||
     pathname.startsWith("/contact") ||
     pathname.startsWith("/news") ||

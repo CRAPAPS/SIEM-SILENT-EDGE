@@ -26,6 +26,7 @@ const NAV_LINKS = [
   { href: "/",           label: "home" },
   { href: "/services",   label: "services" },
   { href: "/silent-edge",label: "silent-edge" },
+  { href: "/work",       label: "work" },
   { href: "/store",      label: "store" },
   { href: "/news",       label: "news" },
   { href: "/our-story",  label: "our-story" },
@@ -255,6 +256,7 @@ function MarketingFooter() {
             {[
               { href: "/services",      label: "Services" },
               { href: "/silent-edge",   label: "Silent Edge" },
+              { href: "/work",          label: "Work" },
               { href: "/store",         label: "Store" },
               { href: "/privacy-policy",label: "Privacy Policy" },
               { href: "/terms",         label: "Terms of Service" },
