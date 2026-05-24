@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { SpecialistHandler } from "@silent-edge/specialist";
-import OpenAI from "openai";
 
 interface ProposalBlock {
   title: string;
@@ -51,15 +50,19 @@ export async function POST(req: NextRequest) {
 
   // ── RAG context ───────────────────────────────────────────────────────────
   let ragContext = "";
-  const openaiKey = process.env.OPENAI_API_KEY;
-  if (openaiKey) {
+  const voyageKey = process.env.VOYAGE_API_KEY;
+  if (voyageKey) {
     try {
-      const openai = new OpenAI({ apiKey: openaiKey });
-      const embedding = await openai.embeddings.create({
-        model: "text-embedding-3-small",
-        input: query,
+      const embRes = await fetch("https://api.voyageai.com/v1/embeddings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${voyageKey}`,
+        },
+        body: JSON.stringify({ model: "voyage-3", input: [query] }),
       });
-      const vec = embedding.data[0].embedding;
+      const embData = await embRes.json() as { data: { embedding: number[] }[] };
+      const vec = embData.data[0].embedding;
 
       const { data: chunks } = await serviceSupabase.rpc("match_documents", {
         query_embedding: vec,
@@ -123,9 +126,48 @@ export async function POST(req: NextRequest) {
         }
 
         // ── Tool execution (post-stream) ──────────────────────────────────
-        // Tool calls are embedded as JSON in the stream by the handler
-        // Re-query the model without streaming to get tool_use blocks
-        // (Simplified: tool calls come back as text directives we parse)
+        // Parse tool_use directives embedded by the handler as JSON markers
+        // Format: <<<TOOL_USE:{"name":"search_threat_feed","input":{...}}>>>
+        const toolUsePattern = /<<<TOOL_USE:([\s\S]+?)>>>/g;
+        let toolMatch;
+        while ((toolMatch = toolUsePattern.exec(fullResponse)) !== null) {
+          try {
+            const toolCall = JSON.parse(toolMatch[1]) as { name: string; input: Record<string, unknown> };
+
+            if (toolCall.name === "search_threat_feed") {
+              const { ioc_value, ioc_type } = toolCall.input as { ioc_value: string; ioc_type: string };
+
+              const { data: matches } = await serviceSupabase
+                .from("threat_telemetry")
+                .select("source,ioc_type,threat_name,malware_family,tags,confidence,geo_country,mitre_technique_ids,adversary_group,last_seen")
+                .eq("ioc_type", ioc_type)
+                .eq("ioc_value", ioc_value)
+                .order("confidence", { ascending: false })
+                .limit(10);
+
+              let kevEntry = null;
+              if (/^CVE-\d{4}-\d+$/i.test(ioc_value)) {
+                const { data } = await serviceSupabase
+                  .from("cisa_kev_entries")
+                  .select("cve_id,vendor_project,product,vulnerability_name,date_added,due_date,required_action")
+                  .eq("cve_id", ioc_value.toUpperCase())
+                  .maybeSingle();
+                kevEntry = data;
+              }
+
+              const toolOutput = matches?.length || kevEntry
+                ? JSON.stringify({ matches: matches ?? [], cisa_kev: kevEntry })
+                : `No threat intelligence found for ${ioc_type}: ${ioc_value}`;
+
+              toolCalls.push({ name: toolCall.name, input: toolCall.input, output: toolOutput });
+              controller.enqueue(enc.encode(
+                `data: ${JSON.stringify({ tool_result: { name: toolCall.name, output: toolOutput } })}\n\n`
+              ));
+            }
+          } catch {
+            // Malformed tool_use directive — skip
+          }
+        }
 
         // ── Proposal extraction ───────────────────────────────────────────
         const proposal = parseProposal(fullResponse);

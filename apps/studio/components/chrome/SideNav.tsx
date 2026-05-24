@@ -13,9 +13,11 @@ const NAV_ITEMS: NavItem[] = [
   { label: "./dashboard",  href: "/dashboard" },
   { label: "./alerts",     href: "/alerts" },
   { label: "./devices",    href: "/devices" },
-  { label: "./geoint",     href: "/geoint" },
-  { label: "./playbooks",  href: "/playbooks" },
+  { label: "./geoint",       href: "/geoint" },
+  { label: "./threat-intel", href: "/threat-intel" },
+  { label: "./playbooks",    href: "/playbooks" },
   { label: "./proposals",  href: "/proposals" },
+  { label: "./lab",        href: "/lab" },
   { label: "./business",   href: "/business" },
   { label: "./reports",    href: "/business/reports" },
 ];
@@ -27,7 +29,7 @@ const ADMIN_ITEMS: NavItem[] = [
 ];
 
 interface SideNavProps {
-  role?: "admin" | "analyst" | "client";
+  role?: "super_admin" | "admin" | "analyst" | "client";
   userEmail?: string;
 }
 
@@ -83,7 +85,7 @@ export function SideNav({ role, userEmail }: SideNavProps) {
         </Link>
       ))}
 
-      {role === "admin" && (
+      {(role === "super_admin" || role === "admin") && (
         <>
           <div style={{ height: "1px", background: "var(--border)", margin: "0.75rem 0" }} />
           <div className="sidenav-section">ADMIN</div>

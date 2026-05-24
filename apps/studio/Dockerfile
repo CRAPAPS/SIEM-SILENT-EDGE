@@ -19,6 +19,13 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/studio/node_modules ./apps/studio/node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# NEXT_PUBLIC_* vars must be present at build time — Next.js bakes them into the bundle
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 RUN pnpm --filter @silent-edge/studio build
 
 # ── Runner ────────────────────────────────────────────────────────────────────

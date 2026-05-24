@@ -18,7 +18,7 @@ export async function POST(
     .eq("id", user.id)
     .single();
 
-  if (!profile || !["admin", "analyst"].includes(profile.role)) {
+  if (!profile || !["super_admin", "admin", "analyst"].includes(profile.role)) {
     return NextResponse.json({ error: "insufficient role" }, { status: 403 });
   }
 

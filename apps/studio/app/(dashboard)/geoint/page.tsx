@@ -32,6 +32,18 @@ export default async function GeoIntPage() {
     .not("host_ip", "is", null)
     .limit(200);
 
+  // Fetch lab OSINT findings with geo coords for additional arcs
+  const labOrgFilter =
+    profile?.role === "admin" ? {} : { org_id: profile?.organization_id };
+  const { data: labFindings } = await supabase
+    .from("lab_findings")
+    .select("ioc_value, ioc_type, geo_lat, geo_lon, source_tool, org_id")
+    .match(labOrgFilter)
+    .eq("ioc_type", "ip")
+    .not("geo_lat", "is", null)
+    .not("geo_lon", "is", null)
+    .limit(200);
+
   // Fetch OTX threat telemetry for geo origins of IOCs
   const { data: threatFeed } = await supabase
     .from("threat_telemetry")
@@ -100,12 +112,33 @@ export default async function GeoIntPage() {
     if (!targetGeo) continue;
 
     threatArcs.push({
+      id: alert.id,
       sourceLat: iocGeo.lat,
       sourceLon: iocGeo.lon,
       targetLat: targetGeo.lat,
       targetLon: targetGeo.lon,
       severity: alert.severity as ThreatArc["severity"],
       label: iocGeo.name,
+    });
+  }
+
+  // Add OSINT lab findings as additional threat arcs
+  for (const finding of labFindings ?? []) {
+    if (!finding.geo_lat || !finding.geo_lon) continue;
+    const targetDevice = geoDevices.find(
+      (d) =>
+        profile?.role === "admin" ||
+        d.orgId === ((finding as Record<string, unknown>).org_id ?? profile?.organization_id),
+    );
+    if (!targetDevice) continue;
+    threatArcs.push({
+      id: `lab_${finding.ioc_value}`,
+      sourceLat: Number(finding.geo_lat),
+      sourceLon: Number(finding.geo_lon),
+      targetLat: targetDevice.lat,
+      targetLon: targetDevice.lon,
+      severity: "info",
+      label: `OSINT: ${finding.ioc_value}`,
     });
   }
 

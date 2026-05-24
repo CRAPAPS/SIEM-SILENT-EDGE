@@ -30,7 +30,7 @@ CREATE TABLE profiles (
   organization_id UUID        REFERENCES organizations(id) ON DELETE SET NULL,
   display_name    TEXT,
   role            TEXT        NOT NULL DEFAULT 'client'
-                                CHECK (role IN ('admin', 'analyst', 'client')),
+                                CHECK (role IN ('super_admin', 'admin', 'analyst', 'client')),
   avatar_url      TEXT,
   last_seen_at    TIMESTAMPTZ,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),

@@ -29,6 +29,9 @@ importers:
       '@silent-edge/geospatial':
         specifier: workspace:*
         version: link:../../packages/geospatial
+      '@silent-edge/lab-manager':
+        specifier: workspace:*
+        version: link:../../packages/lab-manager
       '@silent-edge/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -104,6 +107,12 @@ importers:
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
+  packages/lab-manager:
+    devDependencies:
       typescript:
         specifier: ^5.4.0
         version: 5.9.3

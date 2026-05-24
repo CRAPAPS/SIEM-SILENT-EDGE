@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createBrowserClient } from "@supabase/ssr";
+import { SpecialistPanel } from "@/components/ai/SpecialistPanel";
 
 type Alert = {
   id: string;
@@ -68,6 +69,7 @@ export default function AlertsPage() {
   const [selected, setSelected] = useState<Alert | null>(null);
   const [sevFilter, setSevFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("open");
+  const [specialistOpen, setSpecialistOpen] = useState(false);
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -313,6 +315,22 @@ export default function AlertsPage() {
             )}
           </div>
 
+          {/* Specialist Trigger */}
+          <div style={{ borderTop: "1px solid var(--border)", padding: "0.75rem 1rem" }}>
+            <button
+              onClick={() => setSpecialistOpen(true)}
+              style={{
+                width: "100%",
+                fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.1em",
+                fontWeight: 700, padding: "7px 12px",
+                background: "rgba(61,126,255,0.08)", border: "1px solid var(--accent)",
+                color: "var(--accent)", cursor: "pointer", textTransform: "uppercase",
+              }}
+            >
+              ◢ ASK SPECIALIST
+            </button>
+          </div>
+
           {/* Status Actions */}
           <div style={{ borderTop: "1px solid var(--border)", padding: "0.75rem 1rem" }}>
             <div style={{ fontFamily: "var(--mono)", fontSize: "8px", letterSpacing: "0.1em", color: "var(--muted)", marginBottom: 6 }}>
@@ -339,6 +357,13 @@ export default function AlertsPage() {
           </div>
         </div>
       )}
+
+      <SpecialistPanel
+        open={specialistOpen}
+        onClose={() => setSpecialistOpen(false)}
+        alertId={selected?.id}
+        contextLabel={selected ? `ALERT · ${selected.title.slice(0, 40)}${selected.title.length > 40 ? "…" : ""}` : undefined}
+      />
     </div>
   );
 }

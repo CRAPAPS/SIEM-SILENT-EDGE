@@ -1,0 +1,108 @@
+# Silent Edge Persistent Tactical Lab
+# Run alongside the main docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.lab.yml up -d
+#
+# Network isolation: lab units are on lab-net only.
+# lab-gateway bridges lab-net ↔ silent-edge so studio can call it by service name.
+# UFW rules (infra/lab/security/ufw-init.sh) block lab-net from reaching
+# the production silent-edge subnet directly.
+
+services:
+  lab-gateway:
+    build:
+      context: infrastructure/lab/gateway
+      dockerfile: Dockerfile
+    image: silent-edge-lab-gateway:latest
+    container_name: lab-gateway
+    restart: unless-stopped
+    environment:
+      - LAB_ALLOWED_CONTAINERS=osint-unit,redteam-unit
+      - LAB_OUTPUT_ROOT=/opt/silent-edge/lab
+      - LAB_GATEWAY_SECRET=${LAB_GATEWAY_SECRET}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - lab-output:/opt/silent-edge/lab
+    networks:
+      - silent-edge
+      - lab-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9100/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  osint-unit:
+    build:
+      context: infrastructure/lab/osint
+      dockerfile: Dockerfile
+    image: silent-edge-osint:latest
+    container_name: osint-unit
+    restart: unless-stopped
+    volumes:
+      - maltego-data:/root/.maltego
+      - spiderfoot-data:/root/.spiderfoot
+      - lab-output:/output
+    networks:
+      - lab-net
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+
+  redteam-unit:
+    build:
+      context: infrastructure/lab/redteam
+      dockerfile: Dockerfile
+    image: silent-edge-redteam:latest
+    container_name: redteam-unit
+    restart: unless-stopped
+    volumes:
+      - msf-data:/root/.msf4
+      - lab-output:/output
+    networks:
+      - lab-net
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  lab-output:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/silent-edge/lab
+  maltego-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/silent-edge/lab/osint/maltego
+  spiderfoot-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/silent-edge/lab/osint/spiderfoot
+  msf-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/silent-edge/lab/redteam/msf4
+
+networks:
+  silent-edge:
+    external: true
+  lab-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16

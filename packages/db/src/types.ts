@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type Role = "admin" | "analyst" | "client";
+export type Role = "super_admin" | "admin" | "analyst" | "client";
 export type Severity = "info" | "low" | "medium" | "high" | "critical";
 export type AlertStatus = "open" | "investigating" | "contained" | "resolved" | "false_positive";
 export type Provider = "sentinelone" | "ninjaone" | "bitdefender";

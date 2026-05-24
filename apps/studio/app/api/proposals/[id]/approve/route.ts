@@ -18,7 +18,7 @@ export async function POST(
     .eq("id", user.id)
     .single();
 
-  if (!profile || profile.role !== "admin") {
+  if (!profile || !["super_admin", "admin"].includes(profile.role)) {
     return NextResponse.json({ error: "admin only" }, { status: 403 });
   }
 

@@ -136,4 +136,31 @@ export const SPECIALIST_TOOLS = [
       required: ["ioc_value", "ioc_type"],
     },
   },
+  {
+    name: "run_lab_scan",
+    description: "Initiate a reconnaissance or assessment task in a persistent tactical lab unit on the SHEL INFOSEC KVM. Use osint-unit for passive OSINT (SpiderFoot, theHarvester, amass). Use redteam-unit for active assessment (nmap, nikto, sqlmap, msf_auxiliary). Findings are ingested into the platform and appear on the 3D globe within minutes. Requires analyst or admin role.",
+    input_schema: {
+      type: "object",
+      properties: {
+        unit: {
+          type: "string",
+          enum: ["osint-unit", "redteam-unit"],
+          description: "Which lab unit to task: osint-unit for passive intelligence, redteam-unit for active testing",
+        },
+        tool: {
+          type: "string",
+          description: "Tool to execute: spiderfoot | theharvester | amass | nmap | nikto | sqlmap | msf_auxiliary | recon (SHEL proprietary)",
+        },
+        target: {
+          type: "string",
+          description: "Target IP address, CIDR range, or domain name to assess",
+        },
+        parameters: {
+          type: "string",
+          description: "Additional tool flags or options (optional)",
+        },
+      },
+      required: ["unit", "tool", "target"],
+    },
+  },
 ] as const;

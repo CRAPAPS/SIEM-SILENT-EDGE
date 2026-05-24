@@ -28,8 +28,8 @@ $$;
 -- ─── organizations ────────────────────────────────────────────────────────────
 CREATE POLICY "admin_all_organizations" ON organizations
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "member_own_organization" ON organizations
   FOR SELECT TO authenticated
@@ -38,8 +38,8 @@ CREATE POLICY "member_own_organization" ON organizations
 -- ─── profiles ─────────────────────────────────────────────────────────────────
 CREATE POLICY "admin_all_profiles" ON profiles
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "analyst_own_org_profiles" ON profiles
   FOR SELECT TO authenticated
@@ -57,8 +57,8 @@ CREATE POLICY "user_own_profile_update" ON profiles
 -- ─── api_credentials (client role has NO access) ─────────────────────────────
 CREATE POLICY "admin_all_creds" ON api_credentials
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "analyst_own_org_creds_ro" ON api_credentials
   FOR SELECT TO authenticated
@@ -67,8 +67,8 @@ CREATE POLICY "analyst_own_org_creds_ro" ON api_credentials
 -- ─── devices ──────────────────────────────────────────────────────────────────
 CREATE POLICY "admin_all_devices" ON devices
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "analyst_own_org_devices" ON devices
   FOR ALL TO authenticated
@@ -82,8 +82,8 @@ CREATE POLICY "client_own_org_devices_ro" ON devices
 -- ─── alerts ───────────────────────────────────────────────────────────────────
 CREATE POLICY "admin_all_alerts" ON alerts
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "analyst_own_org_alerts" ON alerts
   FOR ALL TO authenticated
@@ -97,8 +97,8 @@ CREATE POLICY "client_own_org_alerts_ro" ON alerts
 -- ─── playbooks ────────────────────────────────────────────────────────────────
 CREATE POLICY "admin_all_playbooks" ON playbooks
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "analyst_own_org_playbooks" ON playbooks
   FOR ALL TO authenticated
@@ -112,7 +112,7 @@ CREATE POLICY "client_own_org_playbooks_ro" ON playbooks
 -- ─── audit_logs (append-only — no UPDATE or DELETE for anyone) ───────────────
 CREATE POLICY "admin_audit_read" ON audit_logs
   FOR SELECT TO authenticated
-  USING (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "analyst_own_org_audit_read" ON audit_logs
   FOR SELECT TO authenticated
@@ -125,8 +125,8 @@ CREATE POLICY "authenticated_insert_audit" ON audit_logs
 -- ─── vector_documents ─────────────────────────────────────────────────────────
 CREATE POLICY "admin_all_vector_docs" ON vector_documents
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "member_global_vector_docs" ON vector_documents
   FOR SELECT TO authenticated
@@ -139,8 +139,8 @@ CREATE POLICY "member_own_org_vector_docs" ON vector_documents
 -- ─── system_metrics ───────────────────────────────────────────────────────────
 CREATE POLICY "admin_all_metrics" ON system_metrics
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "member_own_org_metrics" ON system_metrics
   FOR SELECT TO authenticated
@@ -149,8 +149,8 @@ CREATE POLICY "member_own_org_metrics" ON system_metrics
 -- ─── service_records ──────────────────────────────────────────────────────────
 CREATE POLICY "admin_all_service_records" ON service_records
   FOR ALL TO authenticated
-  USING (public.current_user_role() = 'admin')
-  WITH CHECK (public.current_user_role() = 'admin');
+  USING (public.current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (public.current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY "client_own_org_service_records_ro" ON service_records
   FOR SELECT TO authenticated

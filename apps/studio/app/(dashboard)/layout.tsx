@@ -23,10 +23,12 @@ export default async function DashboardLayout({
     .eq("id", user.id)
     .single();
 
-  const role = (profile?.role ?? "client") as "admin" | "analyst" | "client";
+  const role = (profile?.role ?? "client") as "super_admin" | "admin" | "analyst" | "client";
 
   let orgName: string | undefined;
-  if (role === "admin") {
+  if (role === "super_admin") {
+    orgName = "AEGIS COMMAND";
+  } else if (role === "admin") {
     orgName = "GOD VIEW";
   } else if (profile?.organization_id) {
     const { data: org } = await supabase
@@ -40,7 +42,7 @@ export default async function DashboardLayout({
   return (
     <>
       <FingerprintCapture />
-      <SocBar orgName={orgName} isAdmin={role === "admin"} />
+      <SocBar orgName={orgName} isAdmin={role === "super_admin" || role === "admin"} />
       <SideNav role={role} userEmail={user.email} />
       <main className="app-main">{children}</main>
     </>

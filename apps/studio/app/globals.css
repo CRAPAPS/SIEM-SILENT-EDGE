@@ -482,14 +482,14 @@ html, body {
   gap: clamp(20px, 4vw, 56px);
   margin-bottom: clamp(32px, 6vw, 64px);
 }
-/* Logo first on mobile via order */
-.hero-logo-col     { display: flex; flex-shrink: 0; align-items: center; justify-content: center; order: -1; }
+/* Logo first on mobile via order — width: 100% ensures justify-content centers it in column mode */
+.hero-logo-col     { display: flex; flex-shrink: 0; align-items: center; justify-content: center; order: -1; width: 100%; }
 .hero-headline-col { flex: 1; min-width: 0; width: 100%; order: 0; }
 
 /* Side-by-side from 1024px up */
 @media (min-width: 1024px) {
   .mkt-hero-upper   { flex-direction: row; align-items: center; }
-  .hero-logo-col    { order: 0; }
+  .hero-logo-col    { order: 0; width: auto; }
 }
 
 /* ── Site Logo (nav + footer) — compact version of hero logo animation ── */
@@ -740,11 +740,11 @@ html, body {
   .nav-login       { display: none !important; }
   .nav-hamburger   { display: flex !important; align-items: center; justify-content: center; }
   /* Hero mobile spacing — more breathing room */
-  .mkt-hero        { padding-top: 56px; padding-bottom: 48px; }
-  .mkt-hero-upper  { gap: 56px; }
-  .hero-logo-col   { padding-bottom: 8px; }
-  /* Hero tag — reduce letter-spacing so text fits on one line */
-  .hero-tag        { letter-spacing: 0.5px !important; font-size: 9px !important; }
+  .mkt-hero        { padding-top: 72px; padding-bottom: 48px; }
+  .mkt-hero-upper  { gap: 40px; }
+  .hero-logo-col   { padding-bottom: 4px; }
+  /* Hero tag — reduce letter-spacing so text fits, center it */
+  .hero-tag        { letter-spacing: 0.5px !important; font-size: 9px !important; justify-content: center; }
 }
 
 /* ── Ticker always scrolls ── */
@@ -758,6 +758,17 @@ html, body {
   color: var(--muted);
   letter-spacing: 2px;
   animation: noir-tick 40s linear infinite;
+}
+
+/* ── Landscape phones (≤500px tall) — switch to side-by-side, shrink logo ── */
+@media (orientation: landscape) and (max-height: 500px) {
+  .mkt-hero         { padding-top: 20px; padding-bottom: 20px; }
+  .mkt-hero-upper   { flex-direction: row; align-items: center; gap: 20px; margin-bottom: 12px !important; }
+  .hero-logo-col    { order: 1; width: auto; }
+  .hero-headline-col{ order: 0; }
+  .hero-logo-root   { width: clamp(80px, 26vh, 160px); height: clamp(80px, 26vh, 160px); }
+  .mkt-hero-grid    { margin-top: 16px; }
+  .hero-tag         { justify-content: flex-start; }
 }
 
 /* ── Inner page hero — fluid padding ── */

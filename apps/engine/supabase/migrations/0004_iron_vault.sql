@@ -105,7 +105,7 @@ ALTER TABLE remediation_proposals ENABLE ROW LEVEL SECURITY;
 -- fingerprint_sessions: admin sees all; each user sees their own sessions
 CREATE POLICY fp_admin ON fingerprint_sessions
   FOR ALL TO authenticated
-  USING (current_user_role() = 'admin');
+  USING (current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY fp_self ON fingerprint_sessions
   FOR ALL TO authenticated
@@ -119,13 +119,13 @@ CREATE POLICY tt_read ON threat_telemetry
 
 CREATE POLICY tt_admin ON threat_telemetry
   FOR ALL TO authenticated
-  USING (current_user_role() = 'admin')
-  WITH CHECK (current_user_role() = 'admin');
+  USING (current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (current_user_role() IN ('super_admin', 'admin'));
 
 -- specialist_logs: immutable — admin sees all; others see own org; insert requires actor = self
 CREATE POLICY sl_admin ON specialist_logs
   FOR SELECT TO authenticated
-  USING (current_user_role() = 'admin');
+  USING (current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY sl_org ON specialist_logs
   FOR SELECT TO authenticated
@@ -141,8 +141,8 @@ CREATE POLICY sl_insert ON specialist_logs
 -- remediation_proposals: admin full access; analyst can see + create own org; client blocked
 CREATE POLICY rp_admin ON remediation_proposals
   FOR ALL TO authenticated
-  USING (current_user_role() = 'admin')
-  WITH CHECK (current_user_role() = 'admin');
+  USING (current_user_role() IN ('super_admin', 'admin'))
+  WITH CHECK (current_user_role() IN ('super_admin', 'admin'));
 
 CREATE POLICY rp_analyst_read ON remediation_proposals
   FOR SELECT TO authenticated
