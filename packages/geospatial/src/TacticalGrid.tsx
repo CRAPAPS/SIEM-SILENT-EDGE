@@ -8,6 +8,7 @@ export interface TacticalGridProps {
   center?: { lat: number; lon: number };
   zoom?: number;
   onDeviceClick?: (device: GeoDevice) => void;
+  mapType?: "tactical" | "satellite";
 }
 
 function riskColor(score: number): string {
@@ -22,6 +23,7 @@ export function TacticalGrid({
   center = { lat: 0, lon: 0 },
   zoom = 4,
   onDeviceClick,
+  mapType = "tactical",
 }: TacticalGridProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<unknown>(null);
@@ -46,13 +48,10 @@ export function TacticalGrid({
         };
       });
 
-      const map = new maps.Map(mapRef.current!, {
-        center: { lat: center.lat, lng: center.lon },
-        zoom,
-        mapId: "DARK_MAP_ID",
-        disableDefaultUI: true,
-        backgroundColor: "#050607",
-      });
+      const mapOptions = mapType === "satellite"
+        ? { center: { lat: center.lat, lng: center.lon }, zoom, disableDefaultUI: true, backgroundColor: "#050607", mapTypeId: "hybrid", tilt: 0 }
+        : { center: { lat: center.lat, lng: center.lon }, zoom, mapId: "DARK_MAP_ID", disableDefaultUI: true, backgroundColor: "#050607" };
+      const map = new maps.Map(mapRef.current!, mapOptions);
 
       mapInstanceRef.current = map;
 
@@ -78,7 +77,7 @@ export function TacticalGrid({
     return () => {
       script.remove();
     };
-  }, [center.lat, center.lon, zoom, devices, onDeviceClick]);
+  }, [center.lat, center.lon, zoom, devices, onDeviceClick, mapType]);
 
   const hasApiKey = !!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 

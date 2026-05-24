@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { GeoDevice, GlobeViewProps, TacticalGridProps, GroundIntelProps } from "@silent-edge/geospatial";
+import type { GeoDevice, ThreatArc, GlobeViewProps, TacticalGridProps, GroundIntelProps } from "@silent-edge/geospatial";
 
 // Lazy imports so Three.js doesn't break SSR
 import dynamic from "next/dynamic";
@@ -63,13 +63,14 @@ function GridLoading() {
   );
 }
 
-type ViewMode = "globe" | "tactical" | "ground";
+type ViewMode = "globe" | "tactical" | "satellite" | "ground";
 
 interface GeoIntDashboardProps {
   devices: GeoDevice[];
+  arcs: ThreatArc[];
 }
 
-export function GeoIntDashboard({ devices }: GeoIntDashboardProps) {
+export function GeoIntDashboard({ devices, arcs }: GeoIntDashboardProps) {
   const [view, setView] = useState<ViewMode>("globe");
   const [selectedDevice, setSelectedDevice] = useState<GeoDevice | null>(null);
   const [mapCenter, setMapCenter] = useState<{ lat: number; lon: number } | undefined>();
@@ -77,10 +78,16 @@ export function GeoIntDashboard({ devices }: GeoIntDashboardProps) {
   function handleDeviceClick(device: GeoDevice) {
     setSelectedDevice(device);
     setMapCenter({ lat: device.lat, lon: device.lon });
-    // Auto-drill down on click
     if (view === "globe") setView("tactical");
-    else if (view === "tactical") setView("ground");
+    else if (view === "tactical" || view === "satellite") setView("ground");
   }
+
+  const modeLabels: Record<ViewMode, string> = {
+    globe: "◎ GLOBAL PULSE",
+    tactical: "⊞ TACTICAL GRID",
+    satellite: "⊛ SATELLITE",
+    ground: "◻ GROUND INTEL",
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -93,7 +100,7 @@ export function GeoIntDashboard({ devices }: GeoIntDashboardProps) {
           width: "fit-content",
         }}
       >
-        {(["globe", "tactical", "ground"] as ViewMode[]).map((v) => (
+        {(["globe", "tactical", "satellite", "ground"] as ViewMode[]).map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
@@ -111,7 +118,7 @@ export function GeoIntDashboard({ devices }: GeoIntDashboardProps) {
               borderBottom: view === v ? "1px solid var(--accent)" : "1px solid transparent",
             }}
           >
-            {v === "globe" ? "◎ GLOBAL PULSE" : v === "tactical" ? "⊞ TACTICAL GRID" : "◻ GROUND INTEL"}
+            {modeLabels[v]}
           </button>
         ))}
       </div>
@@ -120,7 +127,7 @@ export function GeoIntDashboard({ devices }: GeoIntDashboardProps) {
       {view === "globe" && (
         <GlobeView
           devices={devices}
-          arcs={[]}
+          arcs={arcs}
           onDeviceClick={handleDeviceClick}
           height={520}
         />
@@ -132,6 +139,16 @@ export function GeoIntDashboard({ devices }: GeoIntDashboardProps) {
           center={mapCenter ?? { lat: 0, lon: 0 }}
           zoom={mapCenter ? 12 : 3}
           onDeviceClick={handleDeviceClick}
+        />
+      )}
+
+      {view === "satellite" && (
+        <TacticalGrid
+          devices={devices}
+          center={mapCenter ?? { lat: 0, lon: 0 }}
+          zoom={mapCenter ? 12 : 3}
+          onDeviceClick={handleDeviceClick}
+          mapType="satellite"
         />
       )}
 

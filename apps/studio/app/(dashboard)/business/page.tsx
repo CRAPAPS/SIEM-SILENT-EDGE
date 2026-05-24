@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+﻿import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 type Org = {
@@ -18,7 +18,7 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 function formatMRR(rate: number | null) {
-  if (!rate) return "—";
+  if (!rate) return "â€”";
   return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", minimumFractionDigits: 0 }).format(rate);
 }
 
@@ -36,7 +36,7 @@ export default async function BusinessPage() {
     .select("role")
     .single();
 
-  if (profile?.role !== "admin") redirect("/dashboard");
+  if (!["super_admin","admin"].includes(profile?.role ?? "")) redirect("/dashboard");
 
   const { data: orgs } = await supabase
     .from("organizations")
@@ -68,7 +68,7 @@ export default async function BusinessPage() {
           BUSINESS STUDIO
         </h1>
         <p style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", margin: "2px 0 0", letterSpacing: "0.06em" }}>
-          GOD VIEW — CLIENT ROSTER & REVENUE
+          GOD VIEW â€” CLIENT ROSTER & REVENUE
         </p>
       </div>
 
@@ -147,7 +147,7 @@ export default async function BusinessPage() {
                       <td>
                         <span style={{ fontFamily: "var(--mono)", fontSize: "9px", letterSpacing: "0.06em",
                           color: org.status === "active" ? "var(--sev-ok)" : "var(--muted)" }}>
-                          {org.status === "active" ? "● " : "○ "}{org.status.toUpperCase()}
+                          {org.status === "active" ? "â— " : "â—‹ "}{org.status.toUpperCase()}
                         </span>
                       </td>
                       <td style={{ fontFamily: "var(--mono)", fontSize: "11px", fontWeight: 700, color: "var(--sev-ok)" }}>
@@ -159,7 +159,7 @@ export default async function BusinessPage() {
                             color: days < 30 ? "var(--sev-warn)" : days < 7 ? "var(--sev-crit)" : "var(--muted)" }}>
                             {days}d left
                           </span>
-                        ) : "—"}
+                        ) : "â€”"}
                       </td>
                       <td style={{ fontFamily: "var(--mono)", fontSize: "11px",
                         color: stats.total > 0 ? "var(--sev-warn)" : "var(--sev-ok)" }}>

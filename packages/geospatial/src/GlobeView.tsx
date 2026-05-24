@@ -3,12 +3,11 @@
 import { useEffect, useRef, useCallback } from "react";
 import type { GeoDevice, ThreatArc, DevicePoint } from "./types";
 
-// Risk score → color mapping (matches Silent Edge severity palette)
 function riskColor(score: number): string {
-  if (score >= 70) return "#ff2222"; // sev-crit
-  if (score >= 50) return "#ff5155"; // sev-alert
-  if (score >= 30) return "#ffaa00"; // sev-warn
-  return "#00e28a";                  // sev-ok
+  if (score >= 70) return "#ff2222";
+  if (score >= 50) return "#ff5155";
+  if (score >= 30) return "#ffaa00";
+  return "#00e28a";
 }
 
 function severityArcColor(severity: ThreatArc["severity"]): string {
@@ -20,6 +19,13 @@ function severityArcColor(severity: ThreatArc["severity"]): string {
     info:     "#3d7eff",
   };
   return map[severity];
+}
+
+function severityRingRgb(severity: ThreatArc["severity"]): string {
+  if (severity === "critical") return "255,34,34";
+  if (severity === "high") return "255,81,85";
+  if (severity === "medium") return "255,170,0";
+  return "61,126,255";
 }
 
 export interface GlobeViewProps {
@@ -52,7 +58,7 @@ export function GlobeView({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    let globe: {
+    type GlobeInstance = {
       globeImageUrl: (url: string) => unknown;
       backgroundColor: (color: string) => unknown;
       atmosphereColor: (color: string) => unknown;
@@ -73,14 +79,28 @@ export function GlobeView({
       arcColor: (fn: (d: unknown) => string) => unknown;
       arcDashLength: (v: number) => unknown;
       arcDashGap: (v: number) => unknown;
+      arcDashInitialGap: (fn: (d: unknown) => number) => unknown;
       arcDashAnimateTime: (v: number) => unknown;
       arcStroke: (fn: (d: unknown) => number) => unknown;
+      ringsData: (data: ThreatArc[]) => unknown;
+      ringLat: (fn: (d: unknown) => number) => unknown;
+      ringLng: (fn: (d: unknown) => number) => unknown;
+      ringColor: (fn: (d: unknown) => (t: number) => string) => unknown;
+      ringMaxRadius: (v: number) => unknown;
+      ringPropagationSpeed: (v: number) => unknown;
+      ringRepeatPeriod: (v: number) => unknown;
     };
 
-    // Dynamic import so Three.js only loads client-side
+    let globe: GlobeInstance;
+
     import("three-globe").then(({ default: ThreeGlobe }) => {
       import("three").then(({ WebGLRenderer, Scene, PerspectiveCamera, AmbientLight, DirectionalLight, Color }) => {
         if (!containerRef.current) return;
+
+        const getAccent = () =>
+          getComputedStyle(document.documentElement)
+            .getPropertyValue("--accent")
+            .trim() || "#3d7eff";
 
         const w = containerRef.current.clientWidth;
         const h = height;
@@ -115,24 +135,15 @@ export function GlobeView({
         };
         window.addEventListener("storage", onStorage);
 
-        // Read current accent from CSS custom property (fallback to default blue)
-        const getAccent = () =>
-          getComputedStyle(document.documentElement)
-            .getPropertyValue("--accent")
-            .trim() || "#3d7eff";
-
-        // Globe
+        // Globe — night earth texture (Kaspersky-style city-lights aesthetic)
         const g = new ThreeGlobe()
-          .globeImageUrl(
-            "https://unpkg.com/three-globe@2.31.0/example/img/earth-dark.jpg"
-          )
+          .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-night.jpg")
           .atmosphereColor(getAccent())
           .atmosphereAltitude(0.12);
 
-        // set transparent background via direct property (newer three-globe types omit this method)
         (g as unknown as { backgroundColor: (c: string) => void }).backgroundColor("rgba(0,0,0,0)");
 
-        globe = g as unknown as typeof globe;
+        globe = g as unknown as GlobeInstance;
         globeRef.current = g;
         scene.add(g as unknown as import("three").Object3D);
 
@@ -163,20 +174,46 @@ export function GlobeView({
         (g as unknown as { arcEndLng: (f: (d: ThreatArc) => number) => unknown }).arcEndLng((d: ThreatArc) => d.targetLon);
         (g as unknown as { arcColor: (f: (d: ThreatArc) => string) => unknown }).arcColor((d: ThreatArc) => severityArcColor(d.severity));
         (g as unknown as { arcDashLength: (v: number) => unknown }).arcDashLength(0.4);
-        (g as unknown as { arcDashGap: (v: number) => unknown }).arcDashGap(0.15);
+        (g as unknown as { arcDashGap: (v: number) => unknown }).arcDashGap(0.5);
+        (g as unknown as { arcDashInitialGap: (f: (d: ThreatArc) => number) => unknown }).arcDashInitialGap(() => Math.random());
         (g as unknown as { arcDashAnimateTime: (v: number) => unknown }).arcDashAnimateTime(2000);
         (g as unknown as { arcStroke: (f: (d: ThreatArc) => number) => unknown }).arcStroke((d: ThreatArc) => {
-          if (d.severity === "critical") return 0.6;
-          if (d.severity === "high") return 0.4;
-          return 0.25;
+          if (d.severity === "critical") return 1.0;
+          if (d.severity === "high") return 0.7;
+          return 0.4;
         });
 
-        // Auto-rotate
+        // Pulsing rings at attack targets (Kaspersky-style impact indicators)
+        (g as unknown as { ringsData: (d: ThreatArc[]) => unknown }).ringsData(arcs);
+        (g as unknown as { ringLat: (f: (d: ThreatArc) => number) => unknown }).ringLat((d: ThreatArc) => d.targetLat);
+        (g as unknown as { ringLng: (f: (d: ThreatArc) => number) => unknown }).ringLng((d: ThreatArc) => d.targetLon);
+        (g as unknown as { ringColor: (f: (d: ThreatArc) => (t: number) => string) => unknown }).ringColor(
+          (d: ThreatArc) => (t: number) => `rgba(${severityRingRgb(d.severity)},${1 - t})`
+        );
+        (g as unknown as { ringMaxRadius: (v: number) => unknown }).ringMaxRadius(4);
+        (g as unknown as { ringPropagationSpeed: (v: number) => unknown }).ringPropagationSpeed(2);
+        (g as unknown as { ringRepeatPeriod: (v: number) => unknown }).ringRepeatPeriod(800);
+
+        // Auto-rotate — pauses on pointer interaction, resumes after 3 s
         let rotY = 0;
         let animId: number;
+        let userInteracting = false;
+        let resumeTimer: ReturnType<typeof setTimeout> | null = null;
+
+        const container = containerRef.current;
+        const onPointerDown = () => {
+          userInteracting = true;
+          if (resumeTimer) clearTimeout(resumeTimer);
+        };
+        const onPointerUp = () => {
+          resumeTimer = setTimeout(() => { userInteracting = false; }, 3000);
+        };
+        container.addEventListener("pointerdown", onPointerDown);
+        container.addEventListener("pointerup", onPointerUp);
+
         function animate() {
           animId = requestAnimationFrame(animate);
-          rotY += 0.002;
+          if (!userInteracting) rotY += 0.002;
           (g as unknown as import("three").Object3D).rotation.y = rotY;
           renderer.render(scene, camera);
         }
@@ -192,16 +229,21 @@ export function GlobeView({
         }
         window.addEventListener("resize", onResize);
 
-        // Cleanup stored on ref for effect cleanup
         (containerRef.current as unknown as { _cleanup?: () => void })._cleanup = () => {
           cancelAnimationFrame(animId);
+          if (resumeTimer) clearTimeout(resumeTimer);
           window.removeEventListener("resize", onResize);
           window.removeEventListener("storage", onStorage);
+          container.removeEventListener("pointerdown", onPointerDown);
+          container.removeEventListener("pointerup", onPointerUp);
           renderer.dispose();
           renderer.domElement.remove();
         };
       });
     });
+
+    // suppress unused warning — globe is set in async callback
+    void globe!;
 
     return () => {
       const el = containerRef.current as unknown as { _cleanup?: () => void } | null;
@@ -209,15 +251,17 @@ export function GlobeView({
     };
   }, []); // Globe init once
 
-  // Update points and arcs when data changes without re-creating the globe
+  // Update points, arcs, and rings when data changes without re-creating the globe
   useEffect(() => {
     if (!globeRef.current) return;
     const g = globeRef.current as {
       pointsData: (d: DevicePoint[]) => unknown;
       arcsData: (d: ThreatArc[]) => unknown;
+      ringsData: (d: ThreatArc[]) => unknown;
     };
     g.pointsData(buildPoints());
     g.arcsData(arcs);
+    g.ringsData(arcs);
   }, [devices, arcs, buildPoints]);
 
   return (
@@ -270,7 +314,7 @@ export function GlobeView({
         ))}
       </div>
 
-      {/* Device count */}
+      {/* Stats overlay */}
       <div
         style={{
           position: "absolute",

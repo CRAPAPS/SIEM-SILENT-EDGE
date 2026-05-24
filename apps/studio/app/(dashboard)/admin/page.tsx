@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+﻿import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function AdminPage() {
@@ -9,7 +9,7 @@ export default async function AdminPage() {
     .select("role")
     .single();
 
-  if (profile?.role !== "admin") redirect("/dashboard");
+  if (!["super_admin","admin"].includes(profile?.role ?? "")) redirect("/dashboard");
 
   const [{ data: orgs }, { data: users }, { data: recentAudit }] = await Promise.all([
     supabase.from("organizations").select("id,name,slug,tier,status,monthly_rate,created_at").order("created_at", { ascending: false }),
@@ -25,7 +25,7 @@ export default async function AdminPage() {
           ADMIN PANEL
         </h1>
         <p style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--accent)", margin: "2px 0 0", letterSpacing: "0.06em" }}>
-          RESTRICTED — ADMIN ACCESS ONLY
+          RESTRICTED â€” ADMIN ACCESS ONLY
         </p>
       </div>
 
@@ -68,7 +68,7 @@ export default async function AdminPage() {
                           fontFamily: "var(--mono)", fontSize: "9px", letterSpacing: "0.06em",
                           color: org.status === "active" ? "var(--sev-ok)" : "var(--muted)",
                         }}>
-                          {org.status === "active" ? "●" : "○"} {org.status.toUpperCase()}
+                          {org.status === "active" ? "â—" : "â—‹"} {org.status.toUpperCase()}
                         </span>
                       </td>
                     </tr>
@@ -106,7 +106,7 @@ export default async function AdminPage() {
                   {(users ?? []).map((u) => {
                     const ROLE_COLORS: Record<string, string> = { admin: "var(--sev-crit)", analyst: "var(--sev-info)", client: "var(--muted)" };
                     const diff = u.last_seen_at ? Math.floor((Date.now() - new Date(u.last_seen_at).getTime()) / 60_000) : null;
-                    const lastSeen = diff === null ? "—" : diff < 5 ? "NOW" : diff < 60 ? `${diff}m` : `${Math.floor(diff / 60)}h`;
+                    const lastSeen = diff === null ? "â€”" : diff < 5 ? "NOW" : diff < 60 ? `${diff}m` : `${Math.floor(diff / 60)}h`;
                     return (
                       <tr key={u.id}>
                         <td style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--fg)" }}>
@@ -136,7 +136,7 @@ export default async function AdminPage() {
           <span className="dot" style={{ background: "var(--sev-warn)" }} />
           AUDIT LOG
           <span style={{ marginLeft: "auto", color: "var(--muted)", fontSize: "9px", letterSpacing: "0.06em" }}>
-            IMMUTABLE · LAST 30 ENTRIES
+            IMMUTABLE Â· LAST 30 ENTRIES
           </span>
         </div>
         <div style={{ overflow: "auto", maxHeight: 360 }}>
@@ -164,13 +164,13 @@ export default async function AdminPage() {
                         {formatted}
                       </td>
                       <td style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--fg)", maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {log.actor_email ?? "—"}
+                        {log.actor_email ?? "â€”"}
                       </td>
                       <td style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--accent)", letterSpacing: "0.04em" }}>
                         {log.action}
                       </td>
                       <td style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--muted)" }}>
-                        {log.target_type ?? "—"}
+                        {log.target_type ?? "â€”"}
                       </td>
                     </tr>
                   );
@@ -189,10 +189,10 @@ export default async function AdminPage() {
         </div>
         <div style={{ padding: "1rem", display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
           {[
-            { label: "◢ NEW ORGANIZATION", href: "/admin/orgs/new", color: "var(--accent)" },
-            { label: "◢ INVITE ANALYST", href: "/admin/invite", color: "var(--sev-info)" },
-            { label: "◢ MIGRATION STATUS", href: "/admin/migrations", color: "var(--muted)" },
-            { label: "◢ SYSTEM HEALTH", href: "/api/health", color: "var(--sev-ok)" },
+            { label: "â—¢ NEW ORGANIZATION", href: "/admin/orgs/new", color: "var(--accent)" },
+            { label: "â—¢ INVITE ANALYST", href: "/admin/invite", color: "var(--sev-info)" },
+            { label: "â—¢ MIGRATION STATUS", href: "/admin/migrations", color: "var(--muted)" },
+            { label: "â—¢ SYSTEM HEALTH", href: "/api/health", color: "var(--sev-ok)" },
           ].map((action) => (
             <a
               key={action.label}
