@@ -15,6 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "./devices",    href: "/devices" },
   { label: "./geoint",       href: "/geoint" },
   { label: "./threat-intel", href: "/threat-intel" },
+  { label: "./cve",          href: "/cve" },
   { label: "./playbooks",    href: "/playbooks" },
   { label: "./proposals",  href: "/proposals" },
   { label: "./lab",        href: "/lab" },
