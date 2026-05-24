@@ -10,17 +10,25 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "./dashboard",  href: "/dashboard" },
-  { label: "./alerts",     href: "/alerts" },
-  { label: "./devices",    href: "/devices" },
+  { label: "./dashboard",    href: "/dashboard" },
+  { label: "./alerts",       href: "/alerts" },
+  { label: "./devices",      href: "/devices" },
   { label: "./geoint",       href: "/geoint" },
   { label: "./threat-intel", href: "/threat-intel" },
   { label: "./cve",          href: "/cve" },
   { label: "./playbooks",    href: "/playbooks" },
-  { label: "./proposals",  href: "/proposals" },
-  { label: "./lab",        href: "/lab" },
-  { label: "./business",   href: "/business" },
-  { label: "./reports",    href: "/business/reports" },
+  { label: "./proposals",    href: "/proposals" },
+  { label: "./lab",          href: "/lab" },
+  { label: "./business",     href: "/business" },
+  { label: "./reports",      href: "/business/reports" },
+];
+
+const CLIENT_NAV_ITEMS: NavItem[] = [
+  { label: "./portal",         href: "/portal" },
+  { label: "./my-devices",     href: "/portal/devices" },
+  { label: "./my-alerts",      href: "/portal/alerts" },
+  { label: "./billing",        href: "/portal/billing" },
+  { label: "./settings",       href: "/settings" },
 ];
 
 const ADMIN_ITEMS: NavItem[] = [
@@ -75,22 +83,10 @@ export function SideNav({ role, userEmail }: SideNavProps) {
 
       <div style={{ height: "1px", background: "var(--border)", margin: "0 0 0.75rem" }} />
 
-      <div className="sidenav-section">SOC</div>
-      {NAV_ITEMS.map((item) => (
-        <Link
-          key={item.href}
-          href={item.href}
-          className={`sidenav-item${isActive(item.href) ? " active" : ""}`}
-        >
-          {item.label}
-        </Link>
-      ))}
-
-      {(role === "super_admin" || role === "admin") && (
+      {role === "client" ? (
         <>
-          <div style={{ height: "1px", background: "var(--border)", margin: "0.75rem 0" }} />
-          <div className="sidenav-section">ADMIN</div>
-          {ADMIN_ITEMS.map((item) => (
+          <div className="sidenav-section">CLIENT PORTAL</div>
+          {CLIENT_NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -99,6 +95,34 @@ export function SideNav({ role, userEmail }: SideNavProps) {
               {item.label}
             </Link>
           ))}
+        </>
+      ) : (
+        <>
+          <div className="sidenav-section">SOC</div>
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`sidenav-item${isActive(item.href) ? " active" : ""}`}
+            >
+              {item.label}
+            </Link>
+          ))}
+          {(role === "super_admin" || role === "admin") && (
+            <>
+              <div style={{ height: "1px", background: "var(--border)", margin: "0.75rem 0" }} />
+              <div className="sidenav-section">ADMIN</div>
+              {ADMIN_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`sidenav-item${isActive(item.href) ? " active" : ""}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </>
+          )}
         </>
       )}
 
