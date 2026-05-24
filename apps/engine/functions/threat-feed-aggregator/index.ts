@@ -261,7 +261,7 @@ async function fetchThreatFox(): Promise<SyncResult> {
     const res = await fetch("https://threatfox-api.abuse.ch/api/v1/", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Auth-Key": apiKey },
-      body: JSON.stringify({ query: "get_iocs", days: 1 }),
+      body: JSON.stringify({ query: "get_iocs", days: 1, limit: 200 }),
     });
     if (!res.ok) throw new Error(`ThreatFox HTTP ${res.status}`);
 
@@ -325,57 +325,36 @@ interface URLhausEntry {
 async function fetchURLhaus(): Promise<SyncResult> {
   const t0 = Date.now();
   let added = 0;
-
   try {
-    const res = await fetch("https://urlhaus-api.abuse.ch/v1/urls/recent/limit/500/");
-    if (!res.ok) throw new Error(`URLhaus HTTP ${res.status}`);
-
-    const data = await res.json() as { query_status: string; urls?: URLhausEntry[] };
-    if (!data.urls) return { source: "urlhaus", iocs_added: 0, iocs_updated: 0, duration_ms: Date.now() - t0 };
-
-    for (const entry of data.urls) {
-      if (entry.url_status === "offline") continue;
-
+    const res = await fetch("https://urlhaus.abuse.ch/downloads/csv_recent/");
+    if (!res.ok) throw new Error("URLhaus CSV HTTP " + res.status);
+    const csv = await res.text();
+    const lines = csv.split("\n").filter((l) => l && !l.startsWith("#"));
+    for (const line of lines.slice(0, 300)) {
+      const cols = line.split(",");
+      if (cols.length < 6) continue;
+      const urlStatus = (cols[3] || "").replace(/"/g, "").trim();
+      if (urlStatus === "offline") continue;
+      const url = (cols[2] || "").replace(/"/g, "").trim();
+      const threat = (cols[5] || "malware").replace(/"/g, "").trim();
+      const dateAdded = (cols[1] || "").replace(/"/g, "").trim();
+      const entryId = (cols[0] || "").replace(/"/g, "").trim();
+      if (!url || !url.startsWith("http")) continue;
       const status = await upsertIOC({
-        source: "urlhaus",
-        ioc_type: "url",
-        ioc_value: entry.url,
-        threat_name: entry.threat,
-        tags: entry.tags ?? [],
-        confidence: 75,
-        first_seen: entry.date_added,
-        pulse_id: entry.id,
-        raw_data: {
-          url_status: entry.url_status,
-          urlhaus_reference: entry.urlhaus_reference,
-        },
+        source: "urlhaus", ioc_type: "url", ioc_value: url,
+        threat_name: threat, tags: [], confidence: 75,
+        first_seen: dateAdded || null, pulse_id: entryId,
+        raw_data: { url_status: urlStatus },
       });
-
       if (status !== "error") {
         added++;
-        await enrichMatchingAlerts(entry.url, "url", "urlhaus", entry.threat);
+        await enrichMatchingAlerts(url, "url", "urlhaus", threat);
       }
     }
   } catch (err) {
     return { source: "urlhaus", iocs_added: 0, iocs_updated: 0, error: String(err), duration_ms: Date.now() - t0 };
   }
-
   return { source: "urlhaus", iocs_added: added, iocs_updated: 0, duration_ms: Date.now() - t0 };
-}
-
-// ── Feodo Tracker source (Abuse.ch botnet C2) ─────────────────────────────────
-
-interface FeodoEntry {
-  ip_address: string;
-  port: number;
-  status: string;
-  hostname?: string | null;
-  as_number?: number | null;
-  as_name?: string | null;
-  country?: string | null;
-  first_seen: string;
-  last_online?: string | null;
-  malware: string;
 }
 
 async function fetchFeodo(): Promise<SyncResult> {

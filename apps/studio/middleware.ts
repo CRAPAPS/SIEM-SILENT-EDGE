@@ -35,6 +35,10 @@ export async function middleware(request: NextRequest) {
   const isPublicAsset =
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/webhooks") ||
+    pathname.startsWith("/api/threat-feed") ||
+    pathname.startsWith("/api/health") ||
+    pathname.startsWith("/api/fingerprint") ||
+    pathname.startsWith("/api/specialist") ||
     pathname === "/favicon.ico";
 
   const isPublicPage =
