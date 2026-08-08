@@ -407,8 +407,138 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
 
   {
-    slug: "extradition-tracking",
+    // Source: PROJECT DEVELOPMENT/SPARTAN TRAINING/SPARTAN_TRAINING_PRD_v4_2026-08.md
+    // That PRD is classified "Confidential — Internal & Partner Distribution" and was NOT
+    // written for publication. Only capability material (its sections 1-9) is used here.
+    //
+    // NEVER publish anything drawn from its section 10 (gaps, operational risk and technical
+    // debt), its Appendix C (credential/environment states), its named personnel, or any
+    // student identifier. Those items are deliberately not restated here: this is a security
+    // firm's public site, and an unfixed-weakness list is a map. Read the PRD itself before
+    // extending this entry.
+    slug: "spartan-training",
     code: "04",
+    name: "Spartan Training",
+    sector: "Security licensing · accreditation LMS",
+    status: "live",
+    url: "https://spartantraining.live",
+    summary:
+      "A purpose-built learning platform for Georgia security and investigative licensing, engineered end to end rather than adapted from an off-the-shelf LMS. The premise: a licensing credential is worth exactly what its assessment integrity is worth — so integrity, sequential competency and forensic auditability were treated as primary requirements, not features.",
+    metrics: [
+      { label: "Certification tracks", value: "3" },
+      { label: "Modules", value: "64" },
+      { label: "Curriculum hours", value: "110.5" },
+    ],
+    stack: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Supabase",
+      "PostgreSQL",
+      "Row-level security",
+      "Claude",
+      "ElevenLabs",
+      "Resend",
+      "Cloudflare Turnstile",
+      "Docker",
+      "nginx",
+      "GitHub Actions",
+    ],
+    sections: [
+      {
+        code: "01",
+        heading: "A certificate is only as good as the assessment behind it",
+        body:
+          "Georgia security and investigative licensing requires documented completion of state-defined curriculum hours. Generic platforms fail that in three specific ways. A student can click through content without engaging, so a certificate issued on that basis is indefensible if challenged. A missed question about report formatting is treated identically to a missed question about the deadly-force threshold. And when a licensing body or opposing counsel asks how a particular operator was credentialed, there is no immutable answer. Those are architectural failures rather than missing features — which is why the platform was built from the schema up instead of configured on top of an existing LMS.",
+      },
+      {
+        code: "02",
+        heading: "Three accredited tracks, 110.5 hours",
+        body:
+          "Armed Security, Private Detective and Unarmed Security run as separate tracks against GA Admin Code § 509-3-.01 and OCGA Title 43, Chapter 38 — 64 modules and 393 learning objects in total, of which 376 carry professional voice narration. Every module terminates in an assessment with a defined passing score, and each track ends in a final accreditation examination at an 85% threshold.",
+        figure: {
+          kind: "bars",
+          showValues: true,
+          max: 75,
+          caption:
+            "Curriculum hours per track. Private Detective is the heaviest at 70 hours, set by the state standard.",
+          bars: [
+            { label: "Private Detective", value: 70.0, display: "70.0 h" },
+            { label: "Unarmed Security", value: 24.0, display: "24.0 h" },
+            { label: "Armed Security", value: 16.5, display: "16.5 h" },
+          ],
+        },
+      },
+      {
+        code: "03",
+        heading: "Competency is sequential and earned",
+        body:
+          "A module is inaccessible until the one before it has been passed — enforced per track, on the server. The page layer and the API layer check independently, so a student cannot reach a locked assessment by calling the endpoint directly rather than clicking through the interface. Instructors and coordinators bypass the gate deliberately, for review.",
+      },
+      {
+        code: "04",
+        heading: "Life-safety errors are categorically different",
+        body:
+          "Questions carrying a life-safety consequence are designated Critical Fail. Answering one incorrectly does not simply lower a score — it triggers a Tactical Reset: the module relocks, a 24-hour cooldown begins, an entry is written to the audit log, and the instructor is emailed. A student who misunderstands the deadly-force threshold does not get to try again ten seconds later.",
+        figure: {
+          kind: "stat-pair",
+          caption:
+            "Roughly a fifth of the question bank is life-safety designated, and those questions are graded on a different consequence model to everything else.",
+          items: [
+            {
+              value: "329",
+              label: "Assessment questions",
+              note: "Across 64 modules, every one with a defined passing score.",
+            },
+            {
+              value: "65",
+              label: "Critical Fail — life-safety",
+              note: "An incorrect answer triggers a Tactical Reset: relock, 24-hour cooldown, audit entry, instructor alert.",
+            },
+          ],
+        },
+      },
+      {
+        code: "05",
+        heading: "The browser is never trusted, and the record cannot be edited",
+        body:
+          "Correct answers never leave the server — assessment responses carry question text and option labels only, and grading happens server-side against the database. Questions and options are shuffled per session, each question runs against a 90-second countdown, attempts run fullscreen, losing tab focus accrues strikes, and every attempt writes a full behavioural timeline. Progress can only be written with a privileged server-side key; no client path exists. Underneath it, a database trigger writes an append-only audit log with no update or delete path — application code cannot disable it, which is what makes the record answerable years later.",
+        figure: {
+          kind: "diagram",
+          caption:
+            "Each stage is enforced independently. Compromising the browser does not move a score.",
+          steps: [
+            {
+              label: "Delivery",
+              detail: "Questions and options only — the answer key never reaches the browser",
+            },
+            {
+              label: "Grading",
+              detail: "Computed server-side against the database, never client-side",
+            },
+            {
+              label: "Write",
+              detail: "Progress requires a privileged server key; students have no insert path",
+            },
+            {
+              label: "Audit",
+              detail: "Append-only log written by a database trigger the app cannot switch off",
+            },
+          ],
+        },
+      },
+      {
+        code: "06",
+        heading: "Real deliverables instead of padded seat time",
+        body:
+          "The Private Detective track's 70 hours are 66 hours of instruction plus 4 hours of assessed practical work: an incident report to a supervising investigator, an investigative report written for law-enforcement hand-off, and a domestic surveillance report prepared for family-law counsel. Students upload the work in the player to a private store; the instructor of record grades it with written feedback, a failing grade returns the assignment for replacement, and the certificate stays locked until the reports are in and at least one has been passed. The hour requirement is satisfied with work a client would recognise.",
+      },
+    ],
+  },
+
+  {
+    slug: "extradition-tracking",
+    code: "05",
     name: "Extradition & Transfer Tracking",
     sector: "Law enforcement · multi-jurisdiction",
     status: "live",
@@ -423,23 +553,6 @@ export const CASE_STUDIES: CaseStudy[] = [
     stack: ["Confidential"],
     sections: [],
   },
-
-  {
-    slug: "pi-training-certification",
-    code: "05",
-    name: "Investigator Training & Certification",
-    sector: "Private investigation · professional certification",
-    status: "live",
-    summary:
-      "A training and certification platform for private investigators and security professionals — course delivery, assessment and credential issuance for a field where the credential has to mean something.",
-    metrics: [
-      { label: "Domain", value: "PI & security" },
-      { label: "Output", value: "Certification" },
-    ],
-    stack: [],
-    sections: [],
-  },
-
 ];
 
 /** Entries with narrative content — these are the ones with detail pages. */
