@@ -2,6 +2,16 @@
 KNOWLEDGE_BASE/
 DESIGN FILES/
 
+# Third-party binaries — 400MB+ of Sysinternals executables, kept local only
+tools/
+
+# Local vector store state
+ruvector.db
+
+# Client-facing proposal sources — client pricing and details stay out of git history.
+# The published copy lives in sites/<name>/ and is deployed from there instead.
+Client Development/
+
 # Dependencies
 node_modules/
 .pnp

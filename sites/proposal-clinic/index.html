@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Centralised lead ingestion, routing and lifecycle portal - Phase One proposal summary.">
+<title>Lead Routing Portal &mdash; Proposal Summary</title>
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<style>
+  :root {
+    --paper:      #F5F2ED;
+    --paper-2:    #EFEBE4;
+    --surface:    #FFFDFA;
+    --ink:        #17211C;
+    --ink-2:      #4B574F;
+    --ink-3:      #7E8981;
+    --rule:       #E0D9CE;
+    --rule-2:     #CFC5B6;
+    --accent:     #1E5A4A;
+    --accent-2:   #2E7A64;
+    --accent-bg:  #E4EDE8;
+    --brass:      #9A7B36;
+    --brass-2:    #B8933F;
+    --clay:       #9E5643;
+    --clay-bg:    #F2E5DF;
+
+    --display: "Didot", "Bodoni 72", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    --body: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, sans-serif;
+
+    --fs-xs: 0.7rem;
+    --fs-sm: 0.875rem;
+    --fs-base: 1.0625rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.75rem;
+    --fs-2xl: 2.5rem;
+    --fs-3xl: clamp(2.75rem, 7vw, 4.75rem);
+
+    --measure: 64ch;
+    --shell: 64rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:      #0D1211;
+      --paper-2:    #121917;
+      --surface:    #151E1A;
+      --ink:        #EFE9DF;
+      --ink-2:      #A5B1A8;
+      --ink-3:      #7F8B83;
+      --rule:       #263029;
+      --rule-2:     #35423A;
+      --accent:     #6FC3A5;
+      --accent-2:   #8AD4B9;
+      --accent-bg:  #16302A;
+      --brass:      #C9A961;
+      --brass-2:    #DCC07E;
+      --clay:       #D08B72;
+      --clay-bg:    #2C1D17;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:      #0D1211;
+    --paper-2:    #121917;
+    --surface:    #151E1A;
+    --ink:        #EFE9DF;
+    --ink-2:      #A5B1A8;
+    --ink-3:      #7F8B83;
+    --rule:       #263029;
+    --rule-2:     #35423A;
+    --accent:     #6FC3A5;
+    --accent-2:   #8AD4B9;
+    --accent-bg:  #16302A;
+    --brass:      #C9A961;
+    --brass-2:    #DCC07E;
+    --clay:       #D08B72;
+    --clay-bg:    #2C1D17;
+  }
+
+  :root[data-theme="light"] {
+    --paper:      #F5F2ED;
+    --paper-2:    #EFEBE4;
+    --surface:    #FFFDFA;
+    --ink:        #17211C;
+    --ink-2:      #4B574F;
+    --ink-3:      #7E8981;
+    --rule:       #E0D9CE;
+    --rule-2:     #CFC5B6;
+    --accent:     #1E5A4A;
+    --accent-2:   #2E7A64;
+    --accent-bg:  #E4EDE8;
+    --brass:      #9A7B36;
+    --brass-2:    #B8933F;
+    --clay:       #9E5643;
+    --clay-bg:    #F2E5DF;
+  }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(120% 80% at 50% -10%, var(--paper-2) 0%, transparent 60%),
+      var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: var(--fs-base);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 6rem) clamp(1.25rem, 5vw, 3rem) 7rem;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .prose { max-width: var(--measure); }
+
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; }
+  h1 {
+    font-size: var(--fs-3xl); line-height: 1.02;
+    letter-spacing: -0.02em; font-weight: 400;
+  }
+  h2 { font-size: var(--fs-2xl); line-height: 1.12; letter-spacing: -0.012em; }
+  h3 { font-size: var(--fs-lg); line-height: 1.32; }
+  p  { margin: 0; }
+  em { font-style: italic; }
+
+  /* letterspaced small caps labels — couture register, not technical */
+  .eyebrow {
+    font-family: var(--body);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--brass);
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .eyebrow::before {
+    content: ""; width: 1.75rem; height: 1px;
+    background: var(--brass); flex: none; opacity: 0.7;
+  }
+
+  .lede { font-size: var(--fs-lg); color: var(--ink-2); line-height: 1.6; }
+
+  /* drop cap — the magazine move */
+  .dropcap::first-letter {
+    font-family: var(--display);
+    float: left;
+    font-size: 3.9em;
+    line-height: 0.82;
+    padding: 0.06em 0.11em 0 0;
+    color: var(--brass);
+    font-weight: 400;
+  }
+
+  section { display: flex; flex-direction: column; gap: 1.75rem; }
+
+  /* hairline + diamond ornament divider */
+  .ornament {
+    display: flex; align-items: center; gap: 1rem;
+    color: var(--rule-2);
+  }
+  .ornament::before, .ornament::after {
+    content: ""; height: 1px; background: currentColor; flex: 1;
+  }
+  .ornament i {
+    width: 5px; height: 5px; background: var(--brass);
+    transform: rotate(45deg); flex: none; font-style: normal;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead { display: flex; flex-direction: column; gap: 1.75rem; }
+  .branches {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem;
+    font-size: var(--fs-xs); letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 600;
+  }
+  .branches span { display: flex; align-items: center; gap: 1.5rem; }
+  .branches span:not(:last-child)::after {
+    content: ""; width: 3px; height: 3px; background: var(--brass);
+    transform: rotate(45deg); opacity: 0.8;
+  }
+
+  /* ---------- latency instrument ---------- */
+  .clock {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-top: 2px solid var(--brass);
+    padding: clamp(1.75rem, 4vw, 2.75rem);
+    display: flex; flex-direction: column; gap: 1.75rem;
+  }
+  .clock-head { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; align-items: baseline; }
+  .clock-figure {
+    font-family: var(--display);
+    font-size: clamp(3.25rem, 10vw, 5.5rem);
+    line-height: 0.9; color: var(--clay);
+    font-variant-numeric: tabular-nums; letter-spacing: -0.04em;
+  }
+  .clock-caption { font-size: var(--fs-sm); color: var(--ink-2); max-width: 38ch; }
+
+  .track { display: flex; flex-direction: column; gap: 0.75rem; }
+  .track-row { display: grid; grid-template-columns: 8.5rem 1fr; gap: 1.25rem; align-items: center; }
+  .track-label {
+    font-size: var(--fs-xs); color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: 0.18em; font-weight: 600;
+  }
+  .bar { height: 3px; position: relative; background: var(--rule); }
+  .bar span { position: absolute; inset: 0 auto 0 0; }
+  .bar-now span  { background: var(--clay); width: 100%; }
+  .bar-goal span { background: var(--accent); width: 1.8%; min-width: 5px; }
+  .track-note { font-size: var(--fs-xs); color: var(--ink-2); letter-spacing: 0.02em; }
+
+  /* ---------- panels ---------- */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: clamp(1.4rem, 3vw, 1.9rem);
+    display: flex; flex-direction: column; gap: 0.8rem;
+    transition: border-color 240ms ease, transform 240ms ease;
+  }
+  .panel:hover { border-color: var(--rule-2); transform: translateY(-2px); }
+  .panel h3 { font-size: var(--fs-base); letter-spacing: 0.005em; }
+  .panel p  { font-size: var(--fs-sm); color: var(--ink-2); }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.25rem; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.25rem; }
+
+  /* ---------- flow ---------- */
+  .flow { display: flex; flex-direction: column; }
+  .flow-step {
+    display: grid; grid-template-columns: 1.5rem 1fr; gap: 1.15rem; align-items: start;
+    padding: 0.8rem 0;
+  }
+  .flow-dot {
+    width: 7px; height: 7px; background: var(--brass);
+    transform: rotate(45deg); margin-top: 0.55rem; justify-self: center;
+    position: relative; flex: none;
+  }
+  .flow-step:not(:last-child) .flow-dot::after {
+    content: ""; position: absolute; left: 50%; top: 7px;
+    width: 1px; height: calc(100% + 1.7rem);
+    background: var(--rule-2); transform: translateX(-50%) rotate(-45deg);
+    transform-origin: top;
+  }
+  .flow-body { display: flex; flex-direction: column; gap: 0.2rem; }
+  .flow-body strong { font-weight: 650; font-size: var(--fs-sm); }
+  .flow-body span { font-size: var(--fs-sm); color: var(--ink-2); }
+
+  /* ---------- ladder — rank encodes reliability ---------- */
+  .ladder { display: flex; flex-direction: column; gap: 0.6rem; }
+  .rung {
+    display: grid; grid-template-columns: 2.5rem 1fr auto; gap: 1.25rem; align-items: baseline;
+    background: var(--surface); border: 1px solid var(--rule);
+    padding: 1rem 1.25rem;
+    transition: border-color 240ms ease, background 240ms ease;
+  }
+  .rung:hover { border-color: var(--rule-2); }
+  .rung-n {
+    font-family: var(--display); font-size: var(--fs-lg);
+    color: var(--brass); font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .rung-name { font-size: var(--fs-sm); }
+  .rung-name em {
+    font-style: normal; color: var(--ink-3); display: block;
+    font-size: var(--fs-xs); margin-top: 0.15rem;
+  }
+  .chip {
+    font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 600; padding: 0.3rem 0.7rem; white-space: nowrap;
+    border: 1px solid var(--rule-2); color: var(--ink-3);
+  }
+  .chip-live { background: var(--accent-bg); color: var(--accent); border-color: transparent; }
+  .rung-final { border-color: var(--brass); }
+
+  /* ---------- tables ---------- */
+  .scroller { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: var(--fs-sm); }
+  th, td { text-align: left; padding: 0.85rem 1rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { border-bottom: 1px solid var(--rule-2); }
+  th {
+    font-size: var(--fs-xs); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.18em; color: var(--brass);
+  }
+  td:first-child { color: var(--ink); }
+  .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .price { font-family: var(--display); font-size: var(--fs-base); color: var(--ink); }
+
+  /* ---------- decisions ---------- */
+  .decision {
+    display: grid; grid-template-columns: auto 1fr; gap: 1.25rem;
+    padding: 1.35rem 0; border-bottom: 1px solid var(--rule);
+  }
+  .decision:last-child { border-bottom: 0; }
+  .decision-tag {
+    font-size: var(--fs-xs); letter-spacing: 0.16em; text-transform: uppercase;
+    font-weight: 600; color: var(--clay); background: var(--clay-bg);
+    padding: 0.25rem 0.6rem; height: fit-content; white-space: nowrap;
+  }
+  .decision-body { display: flex; flex-direction: column; gap: 0.4rem; }
+  .decision-body strong { font-family: var(--display); font-size: var(--fs-lg); font-weight: 400; }
+  .decision-body span { font-size: var(--fs-sm); color: var(--ink-2); }
+
+  mark { background: var(--accent-bg); color: var(--accent); padding: 0.05em 0.25em; }
+
+  ul { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  li {
+    font-size: var(--fs-sm); color: var(--ink-2);
+    padding-left: 1.1rem; position: relative;
+  }
+  li::before {
+    content: ""; position: absolute; left: 0; top: 0.6em;
+    width: 4px; height: 4px; background: var(--brass);
+    transform: rotate(45deg); opacity: 0.85;
+  }
+  li strong { color: var(--ink); font-weight: 650; }
+
+  a { color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+  footer {
+    font-size: var(--fs-xs); color: var(--ink-3);
+    letter-spacing: 0.06em; line-height: 1.9;
+  }
+
+  /* ---------- entrance ---------- */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .shell > * { animation: rise 800ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+  .shell > *:nth-child(1) { animation-delay: 60ms; }
+  .shell > *:nth-child(2) { animation-delay: 150ms; }
+  .shell > *:nth-child(3) { animation-delay: 240ms; }
+  .shell > *:nth-child(n+4) { animation-delay: 320ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shell > * { animation: none; }
+    .panel, .rung { transition: none; }
+    .panel:hover { transform: none; }
+  }
+
+  @media (max-width: 34rem) {
+    .track-row { grid-template-columns: 1fr; gap: 0.4rem; }
+    .rung { grid-template-columns: 2rem 1fr; }
+    .rung .chip { grid-column: 2; justify-self: start; }
+    .dropcap::first-letter { font-size: 3.2em; }
+  }
+</style>
+
+<div class="shell">
+
+  <header class="masthead">
+    <p class="eyebrow">Proposal · Phase One</p>
+    <h1>Every enquiry reaches the right branch, the moment it arrives.</h1>
+    <div class="branches">
+      <span>Brackenfell</span><span>Bloemfontein</span><span>Hermanus</span><span>Somerset West</span>
+    </div>
+    <div class="ornament"><i></i></div>
+    <p class="lede prose dropcap">
+      Your advertising already brings in the enquiries. What it cannot do is tell them apart — so
+      they arrive across two handsets, in two regions, for four branches, and wait for someone to
+      sort them by hand. This is a quiet, centralised system that receives every enquiry, works
+      out which branch it belongs to, and delivers it there within the minute.
+    </p>
+  </header>
+
+  <section>
+    <p class="eyebrow">The cost nobody is counting</p>
+    <h2>An enquiry sent on Saturday waits until Monday.</h2>
+    <div class="clock">
+      <div class="clock-head">
+        <span class="clock-figure">41h</span>
+        <span class="clock-caption">
+          A Saturday afternoon enquiry, first answered on Monday morning — a worked example;
+          the wait reaches 48 hours at its worst. Either way, she has usually booked
+          somewhere else by then.
+        </span>
+      </div>
+      <div class="track">
+        <div class="track-row">
+          <span class="track-label">Today</span>
+          <div class="bar bar-now"><span></span></div>
+        </div>
+        <div class="track-row">
+          <span class="track-label"></span>
+          <span class="track-note">The enquiry sits on a handset until Monday's manual sort</span>
+        </div>
+        <div class="track-row">
+          <span class="track-label">With the portal</span>
+          <div class="bar bar-goal"><span></span></div>
+        </div>
+        <div class="track-row">
+          <span class="track-label"></span>
+          <span class="track-note">Branch notified within 60 seconds — she is acknowledged at once</span>
+        </div>
+      </div>
+    </div>
+    <p class="prose">
+      Removing the Monday sort gives your managers their morning back. Answering a Saturday
+      enquiry <em>on Saturday</em> wins work that is currently being lost in silence. That is the
+      measure this should be judged on.
+    </p>
+  </section>
+
+  <div class="ornament"><i></i></div>
+
+  <section>
+    <p class="eyebrow">Where it stands today</p>
+    <h2>Two Facebook Pages. Two handsets. Four branches.</h2>
+    <div class="grid-3">
+      <div class="panel">
+        <h3>Enquiries land in the wrong region</h3>
+        <p>
+          The adverts are not targeted by branch region, so a prospect near Hermanus can click a
+          Bloemfontein advert and land on that handset — roughly a thousand kilometres from the
+          branch she actually wants.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>Every enquiry is sorted by hand</h3>
+        <p>
+          Up to five hundred messages are worked through each Monday, across both handsets, to
+          find roughly a hundred and fifty genuine enquiries — each then forwarded to a branch
+          manually.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>Nothing is traceable</h3>
+        <p>
+          Once a message is forwarded it leaves no record — whether anyone followed up, what
+          was said, or what became of it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">What the system does</p>
+    <h2>From advert to the right branch, quietly and automatically.</h2>
+    <div class="grid-2">
+      <div class="flow">
+        <div class="flow-step">
+          <span class="flow-dot"></span>
+          <span class="flow-body">
+            <strong>An enquiry arrives</strong>
+            <span>Captured the instant it is submitted, and kept permanently.</span>
+          </span>
+        </div>
+        <div class="flow-step">
+          <span class="flow-dot"></span>
+          <span class="flow-body">
+            <strong>The branch is determined</strong>
+            <span>Several signals are checked in order of reliability.</span>
+          </span>
+        </div>
+        <div class="flow-step">
+          <span class="flow-dot"></span>
+          <span class="flow-body">
+            <strong>That branch is notified</strong>
+            <span>By email, and live in the portal, within the minute.</span>
+          </span>
+        </div>
+        <div class="flow-step">
+          <span class="flow-dot"></span>
+          <span class="flow-body">
+            <strong>She hears back</strong>
+            <span>From a person during opening hours; an acknowledgement after them.</span>
+          </span>
+        </div>
+        <div class="flow-step">
+          <span class="flow-dot"></span>
+          <span class="flow-body">
+            <strong>The outcome is recorded</strong>
+            <span>Contacted, booked, converted or lost — with a reason and a name attached.</span>
+          </span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Each branch sees only its own enquiries</h3>
+        <p>
+          Separation is enforced inside the database itself, not merely hidden in the screens — a
+          branch cannot reach another branch's enquiries even if something in the software goes
+          wrong. Head office sees everything. The administrator who maintains the servers has
+          <mark>no routine access to your clients' details</mark> at all.
+        </p>
+        <p>
+          Anything the system cannot confidently place goes to a review queue where a person
+          decides. Never dropped, never guessed at.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament"><i></i></div>
+
+  <section>
+    <p class="eyebrow">How a branch is identified</p>
+    <h2>Six checks, strongest first.</h2>
+    <p class="prose">
+      Each enquiry is tested against these in turn, and the first confident match wins. The
+      numbering is meaningful: it reflects how reliable each signal genuinely is.
+    </p>
+    <div class="ladder">
+      <div class="rung">
+        <span class="rung-n">I</span>
+        <span class="rung-name">Which advert was clicked<em>Exact — if adverts are arranged by region</em></span>
+        <span class="chip">Needs campaign change</span>
+      </div>
+      <div class="rung">
+        <span class="rung-n">II</span>
+        <span class="rung-name">A WhatsApp enquiry begun from an advert<em>Carries its advert reference automatically</em></span>
+        <span class="chip">Phase Two</span>
+      </div>
+      <div class="rung">
+        <span class="rung-n">III</span>
+        <span class="rung-name">Branch chosen on the enquiry form<em>A single tap</em></span>
+        <span class="chip chip-live">Available now</span>
+      </div>
+      <div class="rung">
+        <span class="rung-n">IV</span>
+        <span class="rung-name">The suburb or town she typed<em>Matched forgivingly — spelling and Afrikaans variants</em></span>
+        <span class="chip chip-live">Available now</span>
+      </div>
+      <div class="rung">
+        <span class="rung-n">V</span>
+        <span class="rung-name">Asking her directly on WhatsApp<em>“Which branch is closest to you?”</em></span>
+        <span class="chip chip-live">Available now</span>
+      </div>
+      <div class="rung rung-final">
+        <span class="rung-n">VI</span>
+        <span class="rung-name">A person reviews it<em>The guarantee — nothing is ever lost or randomly assigned</em></span>
+        <span class="chip chip-live">Always</span>
+      </div>
+    </div>
+    <p class="prose">
+      <strong>Worth knowing:</strong> the first check is the finest of them, and it depends on how
+      your adverts are arranged rather than on any software. The system is built to work well
+      without that change — and so that the change can be switched on later without rebuilding
+      anything.
+    </p>
+  </section>
+
+  <section>
+    <p class="eyebrow">What we need from you</p>
+    <h2>Two decisions — and one recommendation.</h2>
+    <div>
+      <div class="decision">
+        <span class="decision-tag">Our advice</span>
+        <span class="decision-body">
+          <strong>One dedicated number for the platform — the advertising WhatsApp.</strong>
+          <span>
+            Nobody is moved to a desk. The portal is built mobile-first and opens on the very same
+            phone your consultants already use, so they log in and work exactly where they work
+            now — with the whole history in front of them instead of a scroll of mixed messages.
+          </span>
+          <span>
+            What genuinely changes is narrower than it first sounds: a number registered to the
+            platform cannot also run in the WhatsApp Business app, because it cannot be in both
+            places at once. So our advice is to dedicate a <strong>single</strong> number to the
+            platform — the one your advertising already points at — and leave every other handset
+            exactly as it is.
+          </span>
+          <span>
+            A number per branch sounds natural but does not help: message allowances are shared
+            across all your numbers rather than divided between them, so extra numbers add
+            administration without adding capacity.
+          </span>
+        </span>
+      </div>
+      <div class="decision">
+        <span class="decision-tag">Decision</span>
+        <span class="decision-body">
+          <strong>Can the advertising be arranged by region?</strong>
+          <span>
+            The single greatest improvement available, and it costs nothing in the software. We
+            have quoted as though the answer is no, so nothing depends upon it — but if it becomes
+            possible, routing becomes near-perfect and the branch question can come off the form
+            entirely, which lifts enquiry numbers.
+          </span>
+        </span>
+      </div>
+      <div class="decision">
+        <span class="decision-tag">Decision</span>
+        <span class="decision-body">
+          <strong>Who owns the review queue?</strong>
+          <span>
+            Someone at head office should check the small number of enquiries the system cannot
+            place confidently. Without a named owner, they sit unattended.
+          </span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament"><i></i></div>
+
+  <section>
+    <p class="eyebrow">How it is staged</p>
+    <h2>The essential system first.</h2>
+    <div class="grid-3">
+      <div class="panel">
+        <h3>Phase One — fixed price</h3>
+        <ul>
+          <li>Automatic capture of every enquiry</li>
+          <li>Branch identification and delivery</li>
+          <li>Review queue for anything uncertain</li>
+          <li>Instant branch notification</li>
+          <li><strong>Mobile-first portal</strong> — works on the phones your team already carries</li>
+          <li>Per-branch access, strictly separated</li>
+          <li>Follow-up tracked to an outcome</li>
+          <li>Fast search across all history</li>
+          <li>Your Google Sheet kept updated</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Phase Two — optional</h3>
+        <ul>
+          <li><strong>WhatsApp-first adverts.</strong> She messages you first, and once you reply a 72-hour window opens in which messaging in that conversation is free — the largest saving available</li>
+          <li>Adverts arranged by region</li>
+          <li>Full WhatsApp conversations in the portal</li>
+          <li>Return-on-advertising reporting</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Later — reviewed separately</h3>
+        <ul>
+          <li>Treatment notes and consultation records</li>
+          <li>Measurement history and photography</li>
+          <li>Appointment booking</li>
+        </ul>
+        <p>
+          Phase One holds contact details and advertising consent only. Adding clinical
+          information changes what the law asks of the system, so it is assessed and quoted
+          on its own.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Investment</p>
+    <h2>Three things you pay us for — and one you pay Meta directly.</h2>
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Amount</th><th>Terms</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Phase One build</td>
+            <td class="num price">R50,000</td>
+            <td>Once off, on delivery of the scope above</td>
+          </tr>
+          <tr>
+            <td>Server hosting</td>
+            <td class="num price">To be confirmed</td>
+            <td>Yearly, in advance, renewable</td>
+          </tr>
+          <tr>
+            <td>Database</td>
+            <td class="num price">At cost</td>
+            <td>Monthly, with the supplier's invoice attached to ours</td>
+          </tr>
+          <tr>
+            <td>Support &amp; maintenance</td>
+            <td class="num price">R2,999 / month</td>
+            <td>Reserves up to ten hours of specialist time monthly</td>
+          </tr>
+          <tr>
+            <td>Each later phase</td>
+            <td class="num price">R50,000</td>
+            <td>Optional, quoted and agreed before starting</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prose">
+      The monthly allowance is stated so the boundary is clear to both of us rather than left to
+      judgement. Time beyond ten hours is quoted and agreed before any work begins, and unused
+      hours do not carry into the following month. Later phases are entirely optional — the
+      Phase One system is complete and useful on its own.
+    </p>
+    <div class="grid-2">
+      <div class="panel">
+        <h3>Paid by you, straight to Meta</h3>
+        <p>
+          WhatsApp message fees and your advertising spend go directly to Meta on your own
+          account. They are never routed through us and carry no mark-up, so as your advertising
+          grows you see precisely what messaging costs on Meta's own invoice. It is also why the
+          WhatsApp-first approach in Phase Two is worth having — those conversations largely fall
+          inside the free window.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>The database account is yours</h3>
+        <p>
+          We create it under an email address on <em>your own</em> domain, so
+          <mark>you own the account outright</mark> — it is not attached to ours. The login
+          details are yours whenever you want them. We administer it because running a production
+          database is specialist work you have no reason to take on, but nothing has to be prised
+          loose from us should you ever move on.
+        </p>
+      </div>
+    </div>
+    <p class="prose">
+      The server is billed yearly in advance and renewed on your say-so, with a reminder before it
+      falls due. The database supplier bills monthly and its cost moves with how much data you
+      hold, so we pass it on <strong>at cost with their invoice attached to ours</strong> rather
+      than guessing at a yearly figure. Once there are a few months of real usage we can fix it
+      annually, if you would rather have one predictable number.
+    </p>
+    <p class="prose">
+      What the monthly support truly buys is someone competent watching. Enquiry capture depends
+      on a live connection to Meta, whose rules change without warning — and when that quietly
+      stops, the first sign is enquiries simply not arriving. Security sits here too: the system
+      is deliberately built so the administrator maintaining the servers has
+      <mark>no routine access to your clients' details</mark>, and access to that data is
+      recorded. Small adjustments and refinements are included; genuinely new work is quoted
+      before it starts.
+    </p>
+  </section>
+
+  <div class="ornament"><i></i></div>
+
+  <section>
+    <p class="eyebrow">How we will know it worked</p>
+    <h2>Agreed before we begin.</h2>
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr><th>Measure</th><th>Today</th><th>Target</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Monday sorting</td><td class="num">Hours</td><td class="num">None</td></tr>
+          <tr><td>Enquiry to branch notification</td><td class="num">Up to 48h</td><td class="num">Under 1 min</td></tr>
+          <tr><td><strong>Enquiry to first human contact</strong></td><td class="num">Up to 48h</td><td class="num">Same day</td></tr>
+          <tr><td>Enquiries sent to the wrong branch</td><td class="num">Unmeasured</td><td class="num">Measured, falling</td></tr>
+          <tr><td>Enquiries never followed up</td><td class="num">Unknown</td><td class="num">Zero</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="prose">
+      The third line is the one that pays for the project. The rest is housekeeping.
+    </p>
+  </section>
+
+  <div class="ornament"><i></i></div>
+
+  <footer>
+    Proposal summary · Phase One scope · Prepared for client review<br />
+    Figures on messaging costs, limits and platform behaviour have been verified against Meta and
+    Resend documentation. The full architectural audit, discovery questionnaire and requirements
+    document are available separately.
+  </footer>
+
+</div>
+
+</body>
+</html>
