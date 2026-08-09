@@ -537,21 +537,106 @@ export const CASE_STUDIES: CaseStudy[] = [
   },
 
   {
-    slug: "extradition-tracking",
+    // Source: PROJECT DEVELOPMENT/SPARTAN TRANSPORT/SPARTAN TRANSPORT — Platform PRD.txt
+    // That PRD is marked CONFIDENTIAL, for authorized partners and investors under NDA.
+    //
+    // Written at CAPABILITY level only, deliberately. This platform tracks prisoner
+    // movements and field agents; operational mechanics are withheld because publishing
+    // them could help someone anticipate or intercept a transport.
+    //
+    // NEVER publish: the outstanding-configuration list (it is a map of unfixed gaps),
+    // the prime-partner relationship and its go-to-market, named personnel or internal
+    // identifiers, the specific PII fields held on agents, checkpoint taxonomy, safe-zone
+    // and micro-navigation mechanics, or internal route paths. Read the PRD before
+    // extending this entry.
+    slug: "spartan-transport",
     code: "05",
-    name: "Extradition & Transfer Tracking",
-    sector: "Law enforcement · multi-jurisdiction",
+    name: "Spartan Transport",
+    sector: "Fugitive transport & extradition · law enforcement",
     status: "live",
-    confidential: true,
+    url: "https://spartantransport.live",
     summary:
-      "A globally capable platform for tracking extradition and prisoner-transfer matters across jurisdictions, with agent facilitation, chain-of-custody records and audit-grade logging. Described at capability level only — operational detail is deliberately withheld.",
+      "A command platform for the secure fugitive transport and court-ordered extradition industry, replacing paper dispatch with a unified operational picture. Built around one idea: in this work the record is the evidence, so custody, signatures and audit trails are engineered to be answerable in court years later. Described at capability level — operational detail is deliberately withheld.",
     metrics: [
-      { label: "Scope", value: "Multi-jurisdiction" },
-      { label: "Access model", value: "Role-segregated" },
-      { label: "Record integrity", value: "Audit-grade" },
+      { label: "Access tiers", value: "7" },
+      { label: "Custody record", value: "Append-only" },
+      { label: "Signatures", value: "SHA-256 sealed" },
     ],
-    stack: ["Confidential"],
-    sections: [],
+    stack: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "Tailwind v4",
+      "Supabase",
+      "PostgreSQL",
+      "Row-level security",
+      "Realtime",
+      "Claude",
+      "MapLibre GL",
+      "OpenStreetMap",
+      "Resend",
+      "nginx",
+    ],
+    sections: [
+      {
+        code: "01",
+        heading: "A clipboard cannot answer the question that matters",
+        body:
+          "Secure transport ran on paper dispatch, manual personnel management and disconnected communication tools. That is survivable until the day a transport is challenged — by a court, an agency, or opposing counsel — and the question becomes who held custody, at what time, and where. A record assembled afterwards from memory and paperwork is exactly the record that does not hold up. The platform was built on the premise that in this industry the record is the deliverable, not the paperwork around it.",
+      },
+      {
+        code: "02",
+        heading: "Custody is written as it happens",
+        body:
+          "A transport moves through a defined lifecycle, and every action appends to an immutable record rather than updating a row. Position and time are captured at each stage, and distance is computed per leg rather than estimated at the end. Because entries are only ever added, the chain cannot be quietly tidied up after the fact — which is the entire point of keeping it.",
+        figure: {
+          kind: "diagram",
+          caption:
+            "Each transition appends to the custody record. Nothing in the chain is rewritten in place.",
+          steps: [
+            { label: "Pending", detail: "Assignment created and allocated" },
+            { label: "Accepted", detail: "Assignment acknowledged by the assigned operator" },
+            { label: "In transit", detail: "Position and time appended as the movement proceeds" },
+            { label: "Completed", detail: "Closed out with the full chain intact and queryable" },
+          ],
+        },
+      },
+      {
+        code: "03",
+        heading: "Signatures engineered for non-repudiation",
+        body:
+          "Nobody reaches operations until four legal agreements are signed. Each signature seals a cryptographic hash of the exact document content alongside the signer's typed legal name, the timestamp, and the originating context — written into a vault with no update or delete path at the database engine level, and retained for seven years. The design references NIST SP 800-86 for evidence chain of custody and the E-SIGN Act for electronic validity, under 34 U.S.C. § 60103, the governing federal statute for prisoner and detainee transport. The result is a signature that can be proved against the exact text that was agreed, rather than merely asserted.",
+        figure: {
+          kind: "stat-pair",
+          caption:
+            "The asymmetry is deliberate: the compliance record can only ever grow.",
+          items: [
+            {
+              value: "4",
+              label: "Agreements required before access",
+              note: "Terms, privacy, non-disclosure and non-solicitation — enforced at the gate, not by policy alone.",
+            },
+            {
+              value: "0",
+              label: "Ways to edit or erase a signature",
+              note: "No update or delete path exists at the database level. Seven-year retention.",
+            },
+          ],
+        },
+      },
+      {
+        code: "04",
+        heading: "Seven tiers, enforced by the database",
+        body:
+          "Access runs across seven role tiers, from full platform authority down to a read-only audit role. Separation is implemented with row-level security on every table, so an operator sees their own records, a coordinator sees their people, and an administrator sees the estate — enforced at the data layer rather than by hiding controls in the interface. The privileged server key is confined to server-side operations and never reaches a browser.",
+      },
+      {
+        code: "05",
+        heading: "Hold what you must, and nothing more",
+        body:
+          "Warrant and case research is pulled live from official government sources and passed straight through — read-only, with nothing retained in the platform. Operational awareness feeds are queried live rather than accumulated. That is a deliberate security posture rather than an oversight: data that is never stored cannot be breached, cannot be subpoenaed from the wrong party, and cannot quietly go stale. For a system that already holds sensitive personnel records, every category of data it can decline to keep is a liability it does not carry.",
+      },
+    ],
   },
 ];
 
